@@ -7,11 +7,6 @@ export default defineNuxtConfig({
       apiBaseURL: process.env.API_BASE_URL_CLIENT
     }
   },
-  routeRules: {
-    '/api/**': {
-      proxy: `${process.env.API_PROXY_TARGET || 'http://localhost:8080'}/api/**`
-    }
-  },
   vite: {
     esbuild: {
       drop: process.env.NODE_ENV === 'production' ? ['console', 'debugger'] : []

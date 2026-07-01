@@ -5,7 +5,7 @@ import './index.style.scss'
 import {ref} from 'vue'
 import {useRouter} from 'vue-router'
 import {BsInput, BsButton} from '../../components/common'
-
+import {useModal} from '~/composables/useModal'
 definePageMeta({layout: false})
 
 const router = useRouter()
@@ -13,6 +13,7 @@ const api = useLoginApi
 const authStore = useAuthStore()
 const localId = ref('010-1111-2222')
 const localPw = ref('1234')
+const modal = useModal()
 
 const mark =
   'data:image/svg+xml;utf8,' +
@@ -32,8 +33,12 @@ async function login() {
       authStore.setLogin(res.data)
       router.push('/dashboard')
     }
-  } catch (err) {
+  } catch (err: any) {
     console.log(err)
+    modal.open({
+      title: 'Error',
+      description: err?._data?.message
+    })
   }
 }
 </script>

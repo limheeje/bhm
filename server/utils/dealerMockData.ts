@@ -1,7 +1,5 @@
-import {http, HttpResponse} from 'msw'
-
 // ─── 경락 내역 (dashboard) ────────────────────────────────────────────────────
-const mockBids = [
+export const MOCK_BIDS = [
   {
     companyNm: '한우상장업체',
     genderCd: 'STEER',
@@ -35,7 +33,7 @@ const mockBids = [
 ]
 
 // ─── 필터 옵션 (auctions/index) ───────────────────────────────────────────────
-const mockFilterOptions = {
+export const MOCK_FILTER_OPTIONS = {
   grades: [
     {label: '전체', value: ''},
     {label: '1+', value: '1P'},
@@ -51,7 +49,7 @@ const mockFilterOptions = {
 }
 
 // ─── 소 목록 (auctions/index) ─────────────────────────────────────────────────
-const mockCattleList = [
+export const MOCK_CATTLE_LIST = [
   {
     receiptNo: '260601-001-001',
     breedCd: 'HANWOO',
@@ -108,11 +106,11 @@ const mockCattleList = [
 ]
 
 // ─── 즐겨찾기 목록 (favorites/index) ─────────────────────────────────────────
-const mockFavoritesCattle = [
+export const MOCK_FAVORITES_CATTLE = [
   {interestSeq: 10, receiptNo: '260601-001-002', gradeCd: '1', companyNm: '한우상장업체'},
   {interestSeq: 11, receiptNo: '260601-002-001', gradeCd: '2', companyNm: '대한축산업체'}
 ]
-const mockFavoritesPart = [
+export const MOCK_FAVORITES_PART = [
   {
     interestSeq: 20,
     listingNo: 'L-001',
@@ -136,12 +134,13 @@ const mockFavoritesPart = [
 ]
 
 // ─── 공지사항 (notice) ────────────────────────────────────────────────────────
-const mockNotices = [
+export const MOCK_NOTICES = [
   {ntceNo: 1, title: '2026년 7월 경매 일정 안내', regDt: '2026-06-25T09:00:00', pinYn: 'Y'},
   {ntceNo: 2, title: '시스템 점검 안내 (6/30)', regDt: '2026-06-20T10:00:00', pinYn: 'N'},
   {ntceNo: 3, title: '여름철 축산물 위생 관리 공지', regDt: '2026-06-15T11:00:00', pinYn: 'N'}
 ]
-const mockNoticeDetails: Record<number, object> = {
+
+export const MOCK_NOTICE_DETAILS: Record<number, object> = {
   1: {
     ntceNo: 1,
     title: '2026년 7월 경매 일정 안내',
@@ -188,7 +187,7 @@ const mockNoticeDetails: Record<number, object> = {
 }
 
 // ─── 소 상세 (auctions/[receiptNo]) ──────────────────────────────────────────
-const mockCattleDetails: Record<string, object> = {
+export const MOCK_CATTLE_DETAILS: Record<string, object> = {
   '260601-001-001': {
     receiptNo: '260601-001-001',
     breedCd: 'HANWOO',
@@ -270,119 +269,13 @@ const mockCattleDetails: Record<string, object> = {
 }
 
 // ─── 자산 (balance) ───────────────────────────────────────────────────────────
-const mockBalance = {
+export const MOCK_BALANCE = {
   balance: 5280000,
   dealerNo: '003',
   updateDt: '2026-06-29T08:30:00'
 }
-const mockTransactions = [
+export const MOCK_TRANSACTIONS = [
   {typeCd: 1, amount: 1200000, description: '낙찰 대금', regDt: '2026-06-25T14:00:00'},
   {typeCd: 2, amount: -300000, description: '출금', regDt: '2026-06-24T11:00:00'},
   {typeCd: 1, amount: 850000, description: '낙찰 대금', regDt: '2026-06-20T16:00:00'}
-]
-
-// ─── 핸들러 ───────────────────────────────────────────────────────────────────
-export const dealerHandlers = [
-  // 경락 내역
-  http.get('/api/dealer/auctions/bids', () => {
-    return HttpResponse.json({
-      success: true,
-      message: '',
-      httpStatus: 200,
-      data: {
-        list: mockBids,
-        pageInfo: {totalElements: mockBids.length, totalPages: 1, pageNumber: 0, pageSize: 10},
-        summary: {}
-      }
-    })
-  }),
-
-  // 필터 옵션
-  http.get('/api/dealer/auctions/filter-options', () => {
-    return HttpResponse.json({success: true, message: '', httpStatus: 200, data: mockFilterOptions})
-  }),
-
-  // 소 목록
-  http.get('/api/dealer/auctions/listings/cattle', () => {
-    return HttpResponse.json({
-      success: true,
-      message: '',
-      httpStatus: 200,
-      data: {list: mockCattleList, total: mockCattleList.length, page: 1, size: 20}
-    })
-  }),
-
-  // 즐겨찾기 등록
-  http.post('/api/dealer/auctions/favorites', async () => {
-    return HttpResponse.json({
-      success: true,
-      message: '',
-      httpStatus: 200,
-      data: {interestSeq: Math.floor(Math.random() * 1000) + 100}
-    })
-  }),
-
-  // 즐겨찾기 목록
-  http.get('/api/dealer/auctions/favorites', ({request}) => {
-    const url = new URL(request.url)
-    const type = url.searchParams.get('type')
-    const list = type === 'PART' ? mockFavoritesPart : mockFavoritesCattle
-    return HttpResponse.json({success: true, message: '', httpStatus: 200, data: list})
-  }),
-
-  // 공지사항 목록
-  http.get('/api/dealer/notices', () => {
-    return HttpResponse.json({
-      success: true,
-      message: '',
-      httpStatus: 200,
-      data: {list: mockNotices, page: 1, total: mockNotices.length, size: 20}
-    })
-  }),
-
-  // 공지사항 상세
-  http.get('/api/dealer/notices/:ntceNo', ({params}) => {
-    const ntceNo = Number(params.ntceNo)
-    const detail = mockNoticeDetails[ntceNo]
-    if (!detail) {
-      return HttpResponse.json(
-        {success: false, message: '공지사항을 찾을 수 없습니다.', httpStatus: 404},
-        {status: 404}
-      )
-    }
-    return HttpResponse.json({success: true, message: '', httpStatus: 200, data: detail})
-  }),
-
-  // 잔고
-  http.get('/api/dealer/asset/balance', () => {
-    return HttpResponse.json({success: true, message: '', httpStatus: 200, data: mockBalance})
-  }),
-
-  // 거래내역
-  http.get('/api/dealer/asset/transactions', () => {
-    return HttpResponse.json({
-      success: true,
-      message: '',
-      httpStatus: 200,
-      data: {list: mockTransactions, page: 1, total: mockTransactions.length, size: 20}
-    })
-  }),
-
-  // 소 상세
-  http.get('/api/dealer/auctions/listings/cattle/:receiptNo', ({params}) => {
-    const receiptNo = params.receiptNo as string
-    const detail = mockCattleDetails[receiptNo]
-    if (!detail) {
-      return HttpResponse.json(
-        {success: false, message: '해당 경매 정보를 찾을 수 없습니다.', httpStatus: 404},
-        {status: 404}
-      )
-    }
-    return HttpResponse.json({success: true, message: '', httpStatus: 200, data: detail})
-  }),
-
-  // 즐겨찾기 해제
-  http.delete('/api/dealer/auctions/favorites/:interestSeq', () => {
-    return HttpResponse.json({success: true, message: '', httpStatus: 200, data: null})
-  })
 ]
