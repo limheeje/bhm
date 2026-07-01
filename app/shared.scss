@@ -1,0 +1,123 @@
+/* ============================================================
+   공유 페이지 패턴 — page header + data table + KPI
+   (각 페이지 index.vue 에서 side-effect import)
+   토큰만 사용. 클래스 네임스페이스: .pg-* / .dt-*
+   ============================================================ */
+
+/* ---------- page header ---------- */
+.pg {
+  padding: 24px;
+
+  &__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  &__title { font: var(--type-h2); color: var(--text-primary); margin: 0; }
+  &__sub { font: var(--type-body-sm); color: var(--text-secondary); margin: 4px 0 0; }
+  &__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+  @media (max-width: 720px) {
+    padding: 16px;
+  }
+}
+
+/* ---------- KPI stat ---------- */
+.kpi {
+  &__label { font: var(--type-body-sm); color: var(--text-secondary); }
+  &__value { font: var(--type-h2); color: var(--text-primary); margin-top: 6px; font-variant-numeric: tabular-nums; }
+  &__trend { display: flex; align-items: center; gap: 8px; margin-top: 10px; }
+  &__delta {
+    display: inline-flex; align-items: center; gap: 3px;
+    font: var(--type-caption); font-weight: 600;
+    &--up { color: var(--success-fg); }
+    &--down { color: var(--danger-fg); }
+  }
+  &__sub { font: var(--type-caption); color: var(--text-muted); }
+}
+
+/* ---------- data table ---------- */
+.dt {
+  &__scroll { width: 100%; overflow-x: auto; }
+
+  &__table { width: 100%; }
+
+  &__head,
+  &__row {
+    display: grid;
+    gap: 14px;
+    align-items: center;
+    padding: 10px 4px;
+    min-width: var(--dt-min, 640px);
+  }
+  &__head {
+    border-bottom: 1px solid var(--border-subtle);
+    position: sticky;
+    top: 0;
+  }
+  &__row {
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 12px 4px;
+    transition: background var(--duration-fast) var(--ease-out);
+    &:hover { background: var(--surface-hover); }
+    &--selected { background: var(--brand-50); }
+    &:last-child { border-bottom: none; }
+  }
+
+  &__hcell {
+    font: var(--type-caption);
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    white-space: nowrap;
+    &--right { text-align: right; }
+  }
+
+  &__cell {
+    font: var(--type-body);
+    color: var(--text-primary);
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    &--mono { font: var(--type-mono); font-size: 12.5px; }
+    &--num { font-variant-numeric: tabular-nums; text-align: right; }
+    &--muted { color: var(--text-muted); }
+    &--strong { font-weight: 600; }
+  }
+
+  &__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 4px 4px;
+    flex-wrap: wrap;
+    gap: 10px;
+    &-count { font: var(--type-body-sm); color: var(--text-muted); }
+  }
+}
+
+/* ---------- empty state ---------- */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 56px 20px;
+  color: var(--text-muted);
+  text-align: center;
+
+  &__icon {
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-md);
+    background: var(--surface-sunken);
+    color: var(--icon-muted);
+  }
+  &__text { font: var(--type-body); }
+}

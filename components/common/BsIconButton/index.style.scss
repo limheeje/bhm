@@ -1,0 +1,62 @@
+/* BsIconButton — square, icon-only action */
+.bs-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: transparent;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+
+  &--sm {
+    width: var(--control-sm);
+    height: var(--control-sm);
+  }
+  &--md {
+    width: var(--control-md);
+    height: var(--control-md);
+  }
+  &--lg {
+    width: var(--control-lg);
+    height: var(--control-lg);
+  }
+
+  &--ghost {
+    color: var(--icon-default);
+    &:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+  }
+  &--secondary {
+    color: var(--icon-default);
+    background: var(--surface-card);
+    border-color: var(--border-default);
+    &:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+      border-color: var(--border-strong);
+    }
+  }
+  &--primary {
+    color: #fff;
+    background: var(--brand-500);
+    &:hover {
+      background: var(--brand-600);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+  &:focus-visible {
+    box-shadow: var(--ring-brand);
+    outline: none;
+  }
+}

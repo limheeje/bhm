@@ -1,0 +1,73 @@
+/* Settings page */
+.settings {
+  padding: 24px;
+  max-width: 720px;
+
+  &__h2 {
+    font: var(--type-h2);
+    color: var(--text-primary);
+    margin: 0 0 4px;
+  }
+  &__sub {
+    font: var(--type-body-sm);
+    color: var(--text-secondary);
+    margin: 0 0 20px;
+  }
+
+  &__stack {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  &__profile {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+    padding: 6px 0 14px;
+    &-meta {
+      flex: 1;
+    }
+    &-name {
+      font: var(--type-title);
+      color: var(--text-primary);
+    }
+    &-mail {
+      font: var(--type-body-sm);
+      color: var(--text-muted);
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  &__field {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border-subtle);
+    &:last-child {
+      border-bottom: none;
+    }
+    &-label {
+      font: var(--type-label);
+      color: var(--text-primary);
+    }
+    &-hint {
+      font: var(--type-caption);
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+  }
+
+  &__foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+}

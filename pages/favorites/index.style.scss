@@ -1,0 +1,19 @@
+/* Favorites (즐겨찾기) page-specific */
+.fav {
+  &__tabs { padding: 0 16px; border-bottom: 1px solid var(--border-default); }
+  &__tabs :deep(.bs-tabs) { border-bottom: none; }
+  &__table { padding: 0 16px; }
+
+  &__remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px; height: 30px;
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--warning-500);
+    &:hover { background: var(--surface-hover); }
+  }
+}

@@ -1,0 +1,43 @@
+/* Dashboard (경락내역) page-specific */
+.dash {
+  &__cols {
+    display: grid;
+    grid-template-columns: 1.7fr 1fr;
+    gap: 16px;
+    align-items: start;
+  }
+  &__stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+  &__side { display: flex; flex-direction: column; gap: 16px; }
+
+  &__balance {
+    &-label { font: var(--type-body-sm); color: var(--text-secondary); }
+    &-value { font: var(--type-h1); color: var(--text-primary); margin-top: 6px; font-variant-numeric: tabular-nums; }
+    &-meta { font: var(--type-caption); color: var(--text-muted); margin-top: 8px; }
+  }
+
+  &__notice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 4px;
+    border-bottom: 1px solid var(--border-subtle);
+    text-decoration: none;
+    &:last-child { border-bottom: none; }
+    &:hover .dash__notice-title { color: var(--brand-700); }
+    &-title { flex: 1; min-width: 0; font: var(--type-body-sm); color: var(--text-primary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    &-date { font: var(--type-caption); color: var(--text-muted); flex: none; }
+  }
+
+  @media (max-width: 1024px) {
+    &__cols { grid-template-columns: 1fr; }
+    &__stats { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    &__stats { grid-template-columns: 1fr; }
+  }
+}

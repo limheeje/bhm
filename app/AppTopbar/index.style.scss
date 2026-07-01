@@ -1,0 +1,89 @@
+/* AppTopbar */
+.app-topbar {
+  height: var(--topbar-height);
+  flex: none;
+  background: var(--surface-card);
+  border-bottom: 1px solid var(--border-default);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px;
+
+  &__title {
+    font: var(--type-h3);
+    color: var(--text-primary);
+    margin: 0;
+    flex: none;
+    white-space: nowrap;
+  }
+
+  &__search {
+    flex: 1;
+    max-width: 380px;
+    margin-left: 12px;
+
+    &-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: var(--control-md);
+      padding: 0 12px;
+      background: var(--surface-sunken);
+      border: 1px solid var(--border-default);
+      border-radius: var(--radius-sm);
+    }
+    &-icon { color: var(--icon-muted); display: inline-flex; }
+    &-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font: var(--type-body);
+      color: var(--text-primary);
+      &::placeholder { color: var(--text-muted); }
+    }
+    &-kbd {
+      font: var(--type-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      border: 1px solid var(--border-default);
+      border-radius: 4px;
+      padding: 1px 5px;
+      background: var(--surface-card);
+    }
+  }
+
+  &__spacer { flex: 1; }
+
+  @media (max-width: 720px) {
+    padding: 0 14px;
+    gap: 10px;
+    &__title { font: var(--type-title); }
+    &__search { display: none; }
+  }
+
+  &__bell {
+    position: relative;
+    width: var(--control-md);
+    height: var(--control-md);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-default);
+    background: var(--surface-card);
+    cursor: pointer;
+    color: var(--icon-default);
+
+    &-dot {
+      position: absolute;
+      top: 6px;
+      right: 7px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--danger-500);
+      border: 1.5px solid var(--surface-card);
+    }
+  }
+}

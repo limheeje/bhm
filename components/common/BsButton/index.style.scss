@@ -1,0 +1,112 @@
+@use 'sass:meta';
+
+/* BsButton — all values reference design tokens (var(--…)) */
+.bs-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font: var(--type-label);
+  white-space: nowrap;
+  user-select: none;
+  cursor: pointer;
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out);
+
+  /* sizes */
+  &--sm {
+    height: var(--control-sm);
+    padding: 0 12px;
+  }
+  &--md {
+    height: var(--control-md);
+    padding: 0 16px;
+  }
+  &--lg {
+    height: var(--control-lg);
+    padding: 0 22px;
+    font: 600 15px/1.4 var(--font-sans);
+    border-radius: var(--radius-md);
+  }
+
+  &--full {
+    width: 100%;
+  }
+
+  /* variants */
+  &--primary {
+    background: var(--brand-500);
+    color: var(--text-on-brand);
+    &:hover {
+      background: var(--brand-600);
+    }
+    &:active {
+      background: var(--brand-700);
+    }
+  }
+  &--secondary {
+    background: var(--surface-card);
+    color: var(--text-primary);
+    border-color: var(--border-default);
+    &:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-strong);
+    }
+    &:active {
+      background: var(--surface-active);
+    }
+  }
+  &--ghost {
+    background: transparent;
+    color: var(--text-secondary);
+    &:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+    &:active {
+      background: var(--surface-active);
+    }
+  }
+  &--danger {
+    background: var(--danger-500);
+    color: #fff;
+    &:hover {
+      background: var(--danger-600);
+    }
+    &:active {
+      background: var(--danger-700);
+    }
+  }
+  &--danger-soft {
+    background: var(--danger-bg);
+    color: var(--danger-fg);
+    &:hover {
+      background: var(--danger-100);
+    }
+  }
+
+  &:disabled {
+    opacity: 0.45;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+
+  &:focus-visible {
+    box-shadow: var(--ring-brand);
+    outline: none;
+  }
+
+  &__icon {
+    display: inline-flex;
+    &--lead {
+      margin-left: -2px;
+    }
+    &--trail {
+      margin-right: -2px;
+    }
+  }
+}

@@ -1,0 +1,90 @@
+/* BsToast — notification surface. Tone drives border + icon color. */
+.bs-toast {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
+  min-width: 280px;
+  max-width: 420px;
+  padding: 12px 14px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  color: var(--text-primary);
+
+  &__icon {
+    display: inline-flex;
+    margin-top: 1px;
+  }
+  &__body {
+    flex: 1;
+    min-width: 0;
+  }
+  &__title {
+    font: var(--type-label);
+    color: var(--text-primary);
+  }
+  &__message {
+    font: var(--type-body-sm);
+    color: var(--text-secondary);
+    margin-top: 2px;
+  }
+  &__title + .bs-toast__message {
+    margin-top: 2px;
+  }
+
+  &__close {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    padding: 2px;
+    margin-top: -1px;
+    color: var(--icon-muted);
+    display: inline-flex;
+  }
+
+  /* colored left bar + icon per tone */
+  &--success {
+    border-left: 3px solid var(--success-500);
+    .bs-toast__icon {
+      color: var(--success-fg);
+    }
+  }
+  &--danger {
+    border-left: 3px solid var(--danger-500);
+    .bs-toast__icon {
+      color: var(--danger-fg);
+    }
+  }
+  &--warning {
+    border-left: 3px solid var(--warning-600);
+    .bs-toast__icon {
+      color: var(--warning-fg);
+    }
+  }
+  &--info {
+    border-left: 3px solid var(--info-500);
+    .bs-toast__icon {
+      color: var(--info-fg);
+    }
+  }
+
+  /* neutral = dark inverse surface */
+  &--neutral {
+    background: var(--surface-inverse);
+    border: none;
+    color: #fff;
+    .bs-toast__icon {
+      color: var(--brand-400);
+    }
+    .bs-toast__title {
+      color: #fff;
+    }
+    .bs-toast__message {
+      color: oklch(1 0 0 / 0.75);
+    }
+    .bs-toast__close {
+      color: oklch(1 0 0 / 0.6);
+    }
+  }
+}
