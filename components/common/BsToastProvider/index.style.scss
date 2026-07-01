@@ -1,0 +1,42 @@
+/* BsToastProvider — fixed toast stack. Transition classes here (no <style> in SFC). */
+.bs-toast-stack {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: var(--z-toast);
+  pointer-events: none;
+
+  &--bottom-center {
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    align-items: center;
+  }
+  &--bottom-right {
+    bottom: 24px;
+    right: 24px;
+    align-items: flex-end;
+  }
+  &--top-right {
+    top: 24px;
+    right: 24px;
+    align-items: flex-end;
+  }
+
+  &__item {
+    pointer-events: auto;
+  }
+}
+
+.bs-toast-enter-active,
+.bs-toast-leave-active {
+  transition:
+    opacity var(--duration-normal) var(--ease-out),
+    transform var(--duration-normal) var(--ease-out);
+}
+.bs-toast-enter-from,
+.bs-toast-leave-to {
+  opacity: 0;
+  transform: translateY(10px);
+}

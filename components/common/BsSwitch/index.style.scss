@@ -1,0 +1,58 @@
+/* BsSwitch — on/off toggle. Sizes drive track/knob via CSS custom props. */
+.bs-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+
+  &__track {
+    --bs-switch-w: 40px;
+    --bs-switch-h: 22px;
+    --bs-switch-knob: 16px;
+    position: relative;
+    width: var(--bs-switch-w);
+    height: var(--bs-switch-h);
+    flex: none;
+    border-radius: var(--radius-full);
+    background: var(--neutral-300);
+    transition: background var(--duration-normal) var(--ease-out);
+  }
+
+  &__knob {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: var(--bs-switch-knob);
+    height: var(--bs-switch-knob);
+    border-radius: var(--radius-full);
+    background: #fff;
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--duration-normal) var(--ease-out);
+  }
+
+  &__label {
+    font: var(--type-body);
+    color: var(--text-primary);
+  }
+
+  &--sm .bs-switch__track {
+    --bs-switch-w: 32px;
+    --bs-switch-h: 18px;
+    --bs-switch-knob: 12px;
+  }
+
+  &--on {
+    .bs-switch__track {
+      background: var(--brand-500);
+    }
+    .bs-switch__knob {
+      transform: translateX(calc(var(--bs-switch-w) - var(--bs-switch-knob) - 6px));
+    }
+  }
+
+  &--disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+}

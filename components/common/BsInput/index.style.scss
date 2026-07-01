@@ -1,0 +1,87 @@
+/* BsInput — token-driven text field */
+.bs-input {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+
+  &__label {
+    font: var(--type-label);
+    color: var(--text-primary);
+  }
+
+  &__field {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 0 12px;
+    background: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-sm);
+    transition:
+      border-color var(--duration-fast) var(--ease-out),
+      box-shadow var(--duration-fast) var(--ease-out);
+
+    &--sm {
+      height: var(--control-sm);
+    }
+    &--md {
+      height: var(--control-md);
+    }
+    &--lg {
+      height: var(--control-lg);
+    }
+
+    &:focus-within {
+      border-color: var(--brand-500);
+      box-shadow: var(--ring-brand);
+    }
+  }
+
+  &__control {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    background: transparent;
+    font: var(--type-body);
+    color: var(--text-primary);
+    padding: 0;
+    &::placeholder {
+      color: var(--text-muted);
+    }
+  }
+
+  &__affix {
+    display: inline-flex;
+    color: var(--icon-muted);
+  }
+
+  &__hint {
+    font: var(--type-caption);
+    color: var(--text-muted);
+  }
+  &__error {
+    font: var(--type-caption);
+    color: var(--danger-fg);
+  }
+
+  /* states */
+  &--disabled {
+    .bs-input__field {
+      background: var(--surface-sunken);
+      cursor: not-allowed;
+    }
+    .bs-input__control {
+      cursor: not-allowed;
+    }
+  }
+  &--invalid {
+    .bs-input__field {
+      border-color: var(--danger-500);
+    }
+    .bs-input__field:focus-within {
+      box-shadow: var(--ring-danger);
+    }
+  }
+}

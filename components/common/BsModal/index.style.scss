@@ -1,0 +1,106 @@
+/* BsModal — overlay dialog. Transition classes live here (no <style> in SFC). */
+.bs-modal {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 10vh 20px 40px;
+  background: oklch(0.2 0.02 262 / 0.45);
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+
+  &__dialog {
+    width: 100%;
+    background: var(--surface-card);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+
+    &--sm {
+      max-width: 400px;
+    }
+    &--md {
+      max-width: 540px;
+    }
+    &--lg {
+      max-width: 720px;
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 24px 0;
+  }
+  &__heading {
+    flex: 1;
+    min-width: 0;
+  }
+  &__title {
+    font: var(--type-h3);
+    color: var(--text-primary);
+    margin: 0;
+  }
+  &__desc {
+    font: var(--type-body-sm);
+    color: var(--text-secondary);
+    margin: 6px 0 0;
+  }
+
+  &__close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    flex: none;
+    margin: -2px -6px 0 0;
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: var(--icon-muted);
+    &:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+  }
+
+  &__body {
+    padding: 16px 24px 24px;
+    font: var(--type-body);
+    color: var(--text-secondary);
+    word-break: break-all;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 16px 24px;
+    border-top: 1px solid var(--border-subtle);
+    background: var(--surface-sunken);
+  }
+}
+
+/* transitions */
+.bs-modal-enter-active,
+.bs-modal-leave-active {
+  transition: opacity var(--duration-normal) var(--ease-out);
+}
+.bs-modal-enter-from,
+.bs-modal-leave-to {
+  opacity: 0;
+}
+.bs-modal-enter-active .bs-modal__dialog,
+.bs-modal-leave-active .bs-modal__dialog {
+  transition: transform var(--duration-normal) var(--ease-out);
+}
+.bs-modal-enter-from .bs-modal__dialog,
+.bs-modal-leave-to .bs-modal__dialog {
+  transform: translateY(8px) scale(0.98);
+}

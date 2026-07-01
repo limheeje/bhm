@@ -1,0 +1,38 @@
+/* ============================================
+   Lumo — Spacing, Sizing & Layout
+   4px base grid. Dense enough for back-office.
+   ============================================ */
+
+:root {
+  /* ---- Spacing scale (4px base) ---- */
+  --space-0: 0;
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 8px;
+  --space-4: 12px;
+  --space-5: 16px;
+  --space-6: 20px;
+  --space-7: 24px;
+  --space-8: 32px;
+  --space-9: 40px;
+  --space-10: 48px;
+  --space-12: 64px;
+  --space-16: 96px;
+
+  /* ---- Control heights (form controls, buttons) ---- */
+  --control-sm: 28px;
+  --control-md: 34px; /* default */
+  --control-lg: 42px;
+
+  /* ---- Layout primitives ---- */
+  --sidebar-width: 248px;
+  --sidebar-collapsed: 64px;
+  --topbar-height: 56px;
+  --container-max: 1280px;
+  --content-pad: var(--space-8);
+
+  /* ---- Common gaps ---- */
+  --gap-tight: var(--space-3);
+  --gap-default: var(--space-5);
+  --gap-loose: var(--space-8);
+}

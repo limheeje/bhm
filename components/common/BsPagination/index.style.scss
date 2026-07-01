@@ -1,0 +1,49 @@
+/* BsPagination */
+.bs-pagination {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  &__btn {
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-default);
+    background: var(--surface-card);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font: var(--type-label);
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+    transition:
+      background var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out);
+
+    &:hover:not(:disabled):not(.bs-pagination__btn--active) {
+      background: var(--surface-hover);
+    }
+
+    &--active {
+      background: var(--brand-500);
+      border-color: var(--brand-500);
+      color: var(--text-on-brand);
+      font-weight: 600;
+      cursor: default;
+    }
+
+    &:disabled {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+  }
+
+  &__ellipsis {
+    min-width: 24px;
+    text-align: center;
+    color: var(--text-muted);
+    font: var(--type-label);
+  }
+}

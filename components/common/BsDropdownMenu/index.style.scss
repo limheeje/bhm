@@ -1,0 +1,87 @@
+/* BsDropdownMenu — popover menu anchored to a trigger */
+.bs-dropdown {
+  position: relative;
+  display: inline-flex;
+
+  &__trigger {
+    display: inline-flex;
+  }
+
+  &__menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    min-width: var(--bs-dropdown-width, 200px);
+    background: var(--surface-raised);
+    border: 1px solid var(--border-default);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-popover);
+    padding: 6px;
+    z-index: var(--z-dropdown);
+
+    &--start {
+      left: 0;
+    }
+    &--end {
+      right: 0;
+    }
+  }
+
+  &__divider {
+    height: 1px;
+    background: var(--border-subtle);
+    margin: 6px 0;
+  }
+
+  &__heading {
+    font: var(--type-caption);
+    color: var(--text-muted);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-caps);
+    padding: 6px 10px 4px;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 0 10px;
+    height: 34px;
+    border: none;
+    background: transparent;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-align: left;
+    font: var(--type-label);
+    font-weight: 400;
+    color: var(--text-primary);
+
+    &:hover {
+      background: var(--surface-hover);
+    }
+
+    &--danger {
+      color: var(--danger-fg);
+      &:hover {
+        background: var(--danger-bg);
+      }
+      .bs-dropdown__icon {
+        color: var(--danger-fg);
+      }
+    }
+  }
+
+  &__icon {
+    display: inline-flex;
+    color: var(--icon-muted);
+  }
+  &__label {
+    flex: 1;
+  }
+  &__shortcut {
+    font: var(--type-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+}

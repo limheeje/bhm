@@ -1,0 +1,188 @@
+/* ============================================
+   Lumo — Color System
+   Bright, airy back-office palette.
+   Base values + semantic aliases.
+   ============================================ */
+
+:root {
+  /* ---- Neutrals (cool-tinted, near-white surfaces) ---- */
+  --neutral-0: oklch(1 0 0); /* pure white */
+  --neutral-25: oklch(0.992 0.002 250); /* app background */
+  --neutral-50: oklch(0.978 0.003 250); /* subtle fill */
+  --neutral-100: oklch(0.958 0.004 250); /* hover fill */
+  --neutral-150: oklch(0.935 0.005 250); /* border-strong / track */
+  --neutral-200: oklch(0.91 0.006 250); /* border */
+  --neutral-300: oklch(0.855 0.008 252); /* divider-strong */
+  --neutral-400: oklch(0.715 0.012 255); /* disabled text / icon-muted */
+  --neutral-500: oklch(0.605 0.015 255); /* muted text */
+  --neutral-600: oklch(0.505 0.018 256); /* secondary text */
+  --neutral-700: oklch(0.405 0.02 258); /* body strong */
+  --neutral-800: oklch(0.3 0.02 260); /* heading */
+  --neutral-900: oklch(0.225 0.018 262); /* primary text */
+
+  /* ---- Brand / Primary (bright professional blue) ---- */
+  --brand-50: oklch(0.965 0.018 256);
+  --brand-100: oklch(0.93 0.04 256);
+  --brand-200: oklch(0.88 0.072 256);
+  --brand-300: oklch(0.805 0.11 257);
+  --brand-400: oklch(0.71 0.15 258);
+  --brand-500: oklch(0.62 0.185 259); /* PRIMARY */
+  --brand-600: oklch(0.56 0.19 260); /* hover */
+  --brand-700: oklch(0.49 0.17 261); /* active */
+  --brand-800: oklch(0.4 0.135 262);
+
+  /* ---- Semantic: Success (green) ---- */
+  --success-50: oklch(0.962 0.03 158);
+  --success-100: oklch(0.918 0.062 158);
+  --success-500: oklch(0.64 0.15 156);
+  --success-600: oklch(0.56 0.14 156);
+  --success-700: oklch(0.47 0.115 157);
+
+  /* ---- Semantic: Warning (amber) ---- */
+  --warning-50: oklch(0.968 0.04 85);
+  --warning-100: oklch(0.928 0.08 82);
+  --warning-500: oklch(0.77 0.15 73);
+  --warning-600: oklch(0.69 0.145 65);
+  --warning-700: oklch(0.56 0.12 58);
+
+  /* ---- Semantic: Danger (red) ---- */
+  --danger-50: oklch(0.962 0.022 22);
+  --danger-100: oklch(0.918 0.048 22);
+  --danger-500: oklch(0.62 0.205 24);
+  --danger-600: oklch(0.555 0.2 25);
+  --danger-700: oklch(0.48 0.175 26);
+
+  /* ---- Semantic: Info (cyan-blue, distinct from brand) ---- */
+  --info-50: oklch(0.962 0.028 230);
+  --info-100: oklch(0.918 0.056 230);
+  --info-500: oklch(0.65 0.135 232);
+  --info-600: oklch(0.57 0.13 233);
+
+  /* ============================================
+     SEMANTIC ALIASES — use these in components
+     ============================================ */
+
+  /* Surfaces */
+  --surface-app: var(--neutral-25); /* page background */
+  --surface-card: var(--neutral-0); /* cards, panels */
+  --surface-raised: var(--neutral-0); /* popovers, menus */
+  --surface-sunken: var(--neutral-50); /* wells, inset areas */
+  --surface-hover: var(--neutral-100); /* row / item hover */
+  --surface-active: var(--neutral-150); /* pressed fill */
+  --surface-inverse: var(--neutral-900); /* tooltips, dark chips */
+
+  /* Borders */
+  --border-subtle: var(--neutral-150); /* hairline dividers */
+  --border-default: var(--neutral-200); /* card & input borders */
+  --border-strong: var(--neutral-300); /* emphasized edges */
+  --border-focus: var(--brand-500); /* focus ring color */
+
+  /* Text */
+  --text-primary: var(--neutral-900);
+  --text-secondary: var(--neutral-600);
+  --text-muted: var(--neutral-500);
+  --text-disabled: var(--neutral-400);
+  --text-on-brand: var(--neutral-0);
+  --text-link: var(--brand-600);
+
+  /* Icon */
+  --icon-default: var(--neutral-600);
+  --icon-muted: var(--neutral-400);
+  --icon-brand: var(--brand-500);
+
+  /* Brand semantic */
+  --brand-fg: var(--brand-500);
+  --brand-fg-hover: var(--brand-600);
+  --brand-fg-active: var(--brand-700);
+  --brand-bg-subtle: var(--brand-50);
+  --brand-bg-soft: var(--brand-100);
+
+  /* Status fills (chip backgrounds) + text */
+  --success-fg: var(--success-700);
+  --success-bg: var(--success-50);
+  --warning-fg: var(--warning-700);
+  --warning-bg: var(--warning-50);
+  --danger-fg: var(--danger-700);
+  --danger-bg: var(--danger-50);
+  --info-fg: var(--info-600);
+  --info-bg: var(--info-50);
+
+  /* Focus ring (composed) */
+  --ring-brand: 0 0 0 3px oklch(0.62 0.185 259 / 0.28);
+  --ring-danger: 0 0 0 3px oklch(0.62 0.205 24 / 0.25);
+}
+
+/* ============================================
+   DARK THEME — set [data-theme="dark"] on <html>
+   Re-maps the raw ramps + a few surface aliases so
+   every component inherits dark mode with no changes.
+   ============================================ */
+
+[data-theme='dark'] {
+  /* ---- Neutrals: inverted ramp (0 = darkest → 900 = lightest) ---- */
+  --neutral-0: oklch(0.205 0.012 262);
+  --neutral-25: oklch(0.225 0.012 262);
+  --neutral-50: oklch(0.245 0.012 262);
+  --neutral-100: oklch(0.275 0.013 262);
+  --neutral-150: oklch(0.31 0.013 261);
+  --neutral-200: oklch(0.35 0.014 261);
+  --neutral-300: oklch(0.41 0.015 260);
+  --neutral-400: oklch(0.52 0.016 258);
+  --neutral-500: oklch(0.63 0.016 256);
+  --neutral-600: oklch(0.72 0.015 255);
+  --neutral-700: oklch(0.805 0.012 254);
+  --neutral-800: oklch(0.885 0.009 252);
+  --neutral-900: oklch(0.955 0.005 250);
+
+  /* ---- Brand: brighter on dark; hover steps darker ---- */
+  --brand-50: oklch(0.31 0.058 259);
+  --brand-100: oklch(0.365 0.085 259);
+  --brand-200: oklch(0.435 0.11 259);
+  --brand-300: oklch(0.53 0.14 259);
+  --brand-400: oklch(0.625 0.165 259);
+  --brand-500: oklch(0.685 0.165 259);
+  --brand-600: oklch(0.62 0.17 259);
+  --brand-700: oklch(0.555 0.16 260);
+  --brand-800: oklch(0.47 0.135 261);
+
+  /* ---- Semantic ramps (solids stay vivid for dots/buttons) ---- */
+  --success-500: oklch(0.68 0.15 156);
+  --warning-500: oklch(0.79 0.15 73);
+  --danger-500: oklch(0.65 0.205 24);
+  --info-500: oklch(0.68 0.135 232);
+
+  /* ---- Surfaces: set directly (not derived) ---- */
+  --surface-app: oklch(0.165 0.01 262);
+  --surface-card: var(--neutral-0);
+  --surface-raised: oklch(0.245 0.013 262);
+  --surface-sunken: oklch(0.175 0.01 262);
+  --surface-hover: oklch(0.275 0.013 262);
+  --surface-active: oklch(0.32 0.014 261);
+  --surface-inverse: oklch(0.32 0.014 261);
+
+  /* ---- Text & link ---- */
+  --text-link: oklch(0.73 0.15 259);
+
+  /* ---- Status chips (dark tint bg + light fg) ---- */
+  --success-fg: oklch(0.8 0.13 156);
+  --success-bg: oklch(0.3 0.05 156);
+  --warning-fg: oklch(0.84 0.13 78);
+  --warning-bg: oklch(0.32 0.058 70);
+  --danger-fg: oklch(0.79 0.14 24);
+  --danger-bg: oklch(0.305 0.062 24);
+  --info-fg: oklch(0.79 0.12 232);
+  --info-bg: oklch(0.3 0.052 232);
+
+  /* ---- Shadows: deeper on dark ---- */
+  --shadow-xs: 0 1px 2px oklch(0 0 0 / 0.3);
+  --shadow-sm: 0 1px 2px oklch(0 0 0 / 0.3), 0 1px 3px oklch(0 0 0 / 0.24);
+  --shadow-md: 0 2px 4px oklch(0 0 0 / 0.28), 0 4px 12px oklch(0 0 0 / 0.4);
+  --shadow-lg: 0 4px 8px oklch(0 0 0 / 0.3), 0 12px 28px oklch(0 0 0 / 0.5);
+  --shadow-popover: 0 6px 16px oklch(0 0 0 / 0.45), 0 2px 6px oklch(0 0 0 / 0.3);
+
+  /* ---- Focus rings ---- */
+  --ring-brand: 0 0 0 3px oklch(0.685 0.165 259 / 0.36);
+  --ring-danger: 0 0 0 3px oklch(0.65 0.205 24 / 0.32);
+
+  color-scheme: dark;
+}

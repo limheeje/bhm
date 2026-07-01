@@ -1,0 +1,41 @@
+/* ============================================
+   Lumo — Radius, Shadows & Effects
+   Bright/airy: minimal, soft shadows; rely
+   mostly on hairline borders.
+   ============================================ */
+
+:root {
+  /* ---- Corner radius ---- */
+  --radius-xs: 4px;
+  --radius-sm: 6px; /* buttons, inputs, chips */
+  --radius-md: 8px; /* cards, menus */
+  --radius-lg: 12px; /* large panels, modals */
+  --radius-xl: 16px;
+  --radius-full: 999px; /* pills, avatars */
+
+  /* ---- Shadows (soft, cool-tinted, low spread) ---- */
+  --shadow-xs: 0 1px 2px oklch(0.3 0.02 260 / 0.06);
+  --shadow-sm: 0 1px 2px oklch(0.3 0.02 260 / 0.06), 0 1px 3px oklch(0.3 0.02 260 / 0.05);
+  --shadow-md: 0 2px 4px oklch(0.3 0.02 260 / 0.05), 0 4px 12px oklch(0.3 0.02 260 / 0.08);
+  --shadow-lg: 0 4px 8px oklch(0.3 0.02 260 / 0.05), 0 12px 28px oklch(0.3 0.02 260 / 0.12);
+  --shadow-popover: 0 6px 16px oklch(0.3 0.02 260 / 0.1), 0 2px 6px oklch(0.3 0.02 260 / 0.06);
+
+  /* ---- Border widths ---- */
+  --border-width: 1px;
+  --border-width-strong: 1.5px;
+
+  /* ---- Transitions ---- */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --duration-fast: 120ms;
+  --duration-normal: 180ms;
+  --duration-slow: 260ms;
+
+  /* ---- Z-index scale ---- */
+  --z-base: 1;
+  --z-sticky: 100;
+  --z-dropdown: 300;
+  --z-overlay: 400;
+  --z-modal: 500;
+  --z-toast: 700;
+}

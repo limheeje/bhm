@@ -1,0 +1,53 @@
+/* BsToggleGroup — segmented control */
+.bs-toggle-group {
+  display: inline-flex;
+  padding: 3px;
+  gap: 2px;
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+
+  &--full {
+    width: 100%;
+  }
+
+  &__option {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 0 14px;
+    white-space: nowrap;
+    border: none;
+    border-radius: var(--radius-xs);
+    cursor: pointer;
+    font: var(--type-label);
+    background: transparent;
+    color: var(--text-secondary);
+    box-shadow: none;
+    transition:
+      background var(--duration-fast) var(--ease-out),
+      color var(--duration-fast) var(--ease-out);
+
+    &--active {
+      background: var(--surface-card);
+      color: var(--text-primary);
+      box-shadow: var(--shadow-xs);
+    }
+  }
+
+  /* sizes — control height minus the 8px padding/border budget */
+  &--sm .bs-toggle-group__option {
+    height: calc(var(--control-sm) - 8px);
+  }
+  &--md .bs-toggle-group__option {
+    height: calc(var(--control-md) - 8px);
+  }
+  &--lg .bs-toggle-group__option {
+    height: calc(var(--control-lg) - 8px);
+  }
+
+  &--full .bs-toggle-group__option {
+    flex: 1;
+  }
+}
