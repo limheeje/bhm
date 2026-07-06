@@ -7,7 +7,7 @@
 //  import { useToast } from '~/components/common/index'
 //  const toast = useToast()
 //  function onSave() {
-//    toast({ tone: 'success', title: '저장 완료', message: '데이터가 저장됐어요.' })
+//    toast.open({ tone: 'success', title: '저장 완료', message: '데이터가 저장됐어요.' })
 //  }
 //</script>
 
@@ -46,7 +46,7 @@ export * from '~/components/common/BsDropdownMenu/index.type'
 export * from '~/components/common/BsToast/index.type'
 
 export {useToast, provideToast, LUMO_TOAST_KEY} from '~/composables/useToast'
-export type {ToastTone, ToastOptions, ToastItem, ToastPush} from '~/composables/useToast'
+export type {ToastTone, ToastOptions, ToastItem, ToastController} from '~/composables/useToast'
 
 export {useModal, provideModal, BS_MODAL_KEY} from '~/composables/useModal'
 export type {ModalOptions, ModalController, ModalProviderState} from '~/composables/useModal'

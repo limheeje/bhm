@@ -9,6 +9,7 @@ const props = withDefaults(defineProps<BsToastProps>(), {
   closable: true
 })
 defineEmits<BsToastEmits>()
+console.log('BsToast-----props---', props)
 
 const glyph = computed(() => BS_TOAST_GLYPHS[props.tone] ?? BS_TOAST_GLYPHS.info)
 </script>

@@ -4,10 +4,10 @@ import './index.style.scss'
 import {computed, ref} from 'vue'
 import {BsCard, BsBadge, BsTabs} from '../../components/common'
 import AppIcon from '../../app/AppIcon/index.vue'
-import {useToast} from '../../composables/useToast'
+// import {useToast} from '../../composables/useToast'
 import {FAVORITES_CATTLE, FAVORITES_PART, gradeTone, formatWon} from '../../app/data'
 
-const toast = useToast()
+// const toast = useToast()
 
 const cattle = ref(FAVORITES_CATTLE.map((c) => ({...c})))
 const parts = ref(FAVORITES_PART.map((p) => ({...p})))
@@ -20,11 +20,11 @@ const tabs = computed(() => [
 
 function removeCattle(seq: number) {
   cattle.value = cattle.value.filter((c) => c.interestSeq !== seq)
-  toast({title: '즐겨찾기에서 제거했어요'})
+  // toast.open({title: '즐겨찾기에서 제거했어요'})
 }
 function removePart(seq: number) {
   parts.value = parts.value.filter((p) => p.interestSeq !== seq)
-  toast({title: '즐겨찾기에서 제거했어요'})
+  // toast.open({title: '즐겨찾기에서 제거했어요'})
 }
 
 const cattleCols = '1.4fr 0.8fr 1.4fr 60px'

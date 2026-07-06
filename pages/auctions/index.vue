@@ -4,7 +4,7 @@ import './index.style.scss'
 import {computed, reactive, ref} from 'vue'
 import {BsCard, BsBadge, BsButton, BsSelect, BsInput, BsPagination} from '../../components/common'
 import AppIcon from '../../app/AppIcon/index.vue'
-import {useToast} from '../../composables/useToast'
+// import {useToast} from '../../composables/useToast'
 import {
   CATTLE_LIST,
   FILTER_OPTIONS,
@@ -15,7 +15,7 @@ import {
   type CattleRow
 } from '../../app/data'
 
-const toast = useToast()
+// const toast = useToast()
 
 const rows = reactive(CATTLE_LIST.map((c) => ({...c})))
 const grade = ref('')
@@ -35,11 +35,10 @@ const filtered = computed(() =>
 
 function toggleFav(c: CattleRow) {
   c.favorite = !c.favorite
-  toast({
-    tone: c.favorite ? 'success' : 'neutral',
-    title: c.favorite ? '즐겨찾기에 추가했어요' : '즐겨찾기에서 제거했어요',
-    message: c.receiptNo
-  })
+  // toast.open({
+  //   title: c.favorite ? '즐겨찾기에 추가했어요' : '즐겨찾기에서 제거했어요',
+  //   message: c.receiptNo
+  // })
 }
 function resetFilters() {
   grade.value = ''

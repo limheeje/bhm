@@ -3,16 +3,16 @@ import '../../app/shared.scss'
 import './index.style.scss'
 import {BsCard} from '../../components/common'
 import AppIcon from '../../app/AppIcon/index.vue'
-import {useToast} from '../../composables/useToast'
+// import {useToast} from '../../composables/useToast'
 import {BALANCE, TRANSACTIONS, formatWon, formatWonSigned, formatDate} from '../../app/data'
 
-const toast = useToast()
+// const toast = useToast()
 
 function deposit() {
-  toast({tone: 'info', title: '입금 안내', message: '가상계좌로 입금하시면 자동 반영됩니다.'})
+  // toast.open({title: '입금 안내', message: '가상계좌로 입금하시면 자동 반영됩니다.'})
 }
 function withdraw() {
-  toast({tone: 'success', title: '출금 요청이 접수되었습니다'})
+  // toast.open({title: '출금 요청이 접수되었습니다'})
 }
 </script>
 

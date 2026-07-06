@@ -5,15 +5,16 @@ import './index.style.scss'
 import {ref} from 'vue'
 import {useRouter} from 'vue-router'
 import {BsInput, BsButton} from '../../components/common'
-import {useModal} from '~/composables/useModal'
+import {useToast} from '~/composables/useToast'
+
 definePageMeta({layout: false})
 
 const router = useRouter()
 const api = useLoginApi
 const authStore = useAuthStore()
-const localId = ref('010-1111-2222')
+const localId = ref('010-1111-32')
 const localPw = ref('1234')
-const modal = useModal()
+const toast = useToast()
 
 const mark =
   'data:image/svg+xml;utf8,' +
@@ -28,16 +29,18 @@ async function login() {
       contactNo: localId.value,
       password: localPw.value
     } as LoginRequest)
+    console.dir('res----', res)
+
     if (res.success) {
       console.log('res----', res)
       authStore.setLogin(res.data)
       router.push('/dashboard')
     }
   } catch (err: any) {
-    console.log(err)
-    modal.open({
-      title: 'Error',
-      description: err?._data?.message
+    console.dir('er----', err)
+    toast.open({
+      tone: (key) => key?.['DANGER'],
+      title: 'asdfasdf'
     })
   }
 }

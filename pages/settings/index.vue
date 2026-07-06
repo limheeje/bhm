@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import './index.style.scss'
 import {reactive, ref} from 'vue'
-import {BsCard, BsAvatar, BsInput, BsSwitch, BsButton, useToast} from '~/components/common'
+import {BsCard, BsAvatar, BsInput, BsSwitch, BsButton} from '~/components/common'
 
-const toast = useToast()
+// const toast = useToast()
 
 const name = ref('정하준')
 const email = ref('hajun.jung@lumo.io')
@@ -27,7 +27,7 @@ const securityFields = [
 ] as const
 
 function save() {
-  toast({tone: 'success', title: '설정이 저장되었습니다'})
+  // toast.open({title: '설정이 저장되었습니다'})
 }
 </script>
 
