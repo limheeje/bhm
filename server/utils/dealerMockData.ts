@@ -274,8 +274,24 @@ export const MOCK_BALANCE = {
   dealerNo: '003',
   updateDt: '2026-06-29T08:30:00'
 }
-export const MOCK_TRANSACTIONS = [
-  {typeCd: 1, amount: 1200000, description: '낙찰 대금', regDt: '2026-06-25T14:00:00'},
-  {typeCd: 2, amount: -300000, description: '출금', regDt: '2026-06-24T11:00:00'},
-  {typeCd: 1, amount: 850000, description: '낙찰 대금', regDt: '2026-06-20T16:00:00'}
-]
+const TRANSACTION_DESCRIPTIONS: Record<number, string[]> = {
+  1: ['낙찰 대금', '정산 입금', '보증금 환급'],
+  2: ['출금', '수수료 정산', '보증금 예치']
+}
+
+function generateMockTransactions(count: number) {
+  const baseDate = new Date('2026-06-29T08:30:00')
+  const list = []
+  for (let i = 0; i < count; i++) {
+    const isDeposit = i % 3 !== 0
+    const typeCd = isDeposit ? 1 : 2
+    const amount = isDeposit ? 300000 + ((i * 137) % 900000) : -(100000 + ((i * 91) % 400000))
+    const description = TRANSACTION_DESCRIPTIONS[typeCd][i % TRANSACTION_DESCRIPTIONS[typeCd].length]
+    const regDt = new Date(baseDate.getTime() - i * 6 * 60 * 60 * 1000).toISOString().slice(0, 19)
+    list.push({typeCd, amount, description, regDt})
+  }
+  return list
+}
+
+// size=20 기준 12페이지 분량 (페이지네이션 테스트용)
+export const MOCK_TRANSACTIONS = generateMockTransactions(240)

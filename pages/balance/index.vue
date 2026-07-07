@@ -1,19 +1,34 @@
 <script setup lang="ts">
-import '../../app/shared.scss'
-import './index.style.scss'
-import {BsCard} from '../../components/common'
-import AppIcon from '../../app/AppIcon/index.vue'
-// import {useToast} from '../../composables/useToast'
-import {BALANCE, TRANSACTIONS, formatWon, formatWonSigned, formatDate} from '../../app/data'
+import '~/app/shared.scss'
+import '~/pages/balance/index.style.scss'
+import {BsCard, BsPagination} from '~/components/common'
+import TransactionList from '~/components/balance/transactionList/index.vue'
+import TransactionSkeleton from '~/components/balance/transactionList/index.skeleton.vue'
+import type {BalanceResponse} from '~/types/asset/balance'
+import type {TransactionsDataResponse} from '~/types/asset/transactions'
+import {formatDate, formatWon} from '~/app/data'
+import type {SingleResponse, PaginationResponse} from '~/types/commonResponse'
 
-// const toast = useToast()
+const api = useAssetApi()
+const currentPage = reactive({
+  page: 1,
+  size: 5
+})
+const {data: balanceData, pending: balancePending} = await useAsyncData(
+  'pages-balance',
+  async () => await api.getBalance<SingleResponse<BalanceResponse>>()
+)
+const {data: transactionsData, pending: transactionsPending} = await useAsyncData(
+  'pages-transactions',
+  async () =>
+    await api.getTransactions<PaginationResponse<TransactionsDataResponse>>({
+      page: currentPage.page - 1,
+      size: currentPage.size
+    }),
+  {watch: [currentPage]}
+)
 
-function deposit() {
-  // toast.open({title: '입금 안내', message: '가상계좌로 입금하시면 자동 반영됩니다.'})
-}
-function withdraw() {
-  // toast.open({title: '출금 요청이 접수되었습니다'})
-}
+//{ "balance": 5280000, "dealerNo": "003", "updateDt": "2026-06-29T08:30:00" }
 </script>
 
 <template>
@@ -29,34 +44,25 @@ function withdraw() {
       <!-- 잔고 hero -->
       <div class="bal__hero">
         <div class="bal__hero-label">보유 자산</div>
-        <div class="bal__hero-value">{{ formatWon(BALANCE.balance) }}</div>
-        <div class="bal__hero-meta">
-          딜러번호 {{ BALANCE.dealerNo }} · {{ formatDate(BALANCE.updateDt, true) }} 기준
-        </div>
-        <div class="bal__hero-actions">
-          <button class="bal__btn" @click="deposit">
-            <AppIcon name="arrowDownLeft" :size="16" :stroke="2" /> 입금
-          </button>
-          <button class="bal__btn" @click="withdraw">
-            <AppIcon name="arrowUpRight" :size="16" :stroke="2" /> 출금
-          </button>
-        </div>
+        <template v-if="balancePending"> 불러오는중.. </template>
+        <template v-else>
+          <div class="bal__hero-value">{{ formatWon(balanceData?.data?.balance as number) }}</div>
+          <div class="bal__hero-meta">
+            딜러번호 {{ balanceData?.data?.dealerNo }} ·
+            {{ formatDate(balanceData?.data?.updateDt as string, true) }} 기준
+          </div>
+        </template>
       </div>
 
       <!-- 거래 내역 -->
       <BsCard title="거래 내역" padding="sm">
-        <div v-for="(t, i) in TRANSACTIONS" :key="i" class="bal__tx">
-          <span class="bal__tx-icon" :class="t.amount >= 0 ? 'bal__tx-icon--in' : 'bal__tx-icon--out'">
-            <AppIcon :name="t.amount >= 0 ? 'arrowDownLeft' : 'arrowUpRight'" :size="17" :stroke="2" />
-          </span>
-          <div class="bal__tx-body">
-            <div class="bal__tx-desc">{{ t.description }}</div>
-            <div class="bal__tx-date">{{ formatDate(t.regDt, true) }}</div>
-          </div>
-          <div class="bal__tx-amount" :class="t.amount >= 0 ? 'bal__tx-amount--in' : 'bal__tx-amount--out'">
-            {{ formatWonSigned(t.amount) }}
-          </div>
-        </div>
+        <template v-if="transactionsPending">
+          <TransactionSkeleton :rows="5" />
+        </template>
+        <template v-else>
+          <TransactionList :items="transactionsData?.data ?? []" />
+        </template>
+        <BsPagination v-model="currentPage.page" :total="transactionsData?.pageInfo.totalPages" />
       </BsCard>
     </div>
   </div>

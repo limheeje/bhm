@@ -37,34 +37,6 @@
     &:hover { background: oklch(1 0 0 / 0.26); }
   }
 
-  &__tx {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 13px 4px;
-    border-bottom: 1px solid var(--border-subtle);
-    &:last-child { border-bottom: none; }
-
-    &-icon {
-      width: 34px; height: 34px;
-      flex: none;
-      display: flex; align-items: center; justify-content: center;
-      border-radius: var(--radius-full);
-      &--in { background: var(--success-bg); color: var(--success-fg); }
-      &--out { background: var(--danger-bg); color: var(--danger-fg); }
-    }
-    &-body { flex: 1; min-width: 0; }
-    &-desc { font: var(--type-label); color: var(--text-primary); }
-    &-date { font: var(--type-caption); color: var(--text-muted); margin-top: 2px; }
-    &-amount {
-      font: var(--type-title);
-      font-variant-numeric: tabular-nums;
-      flex: none;
-      &--in { color: var(--success-fg); }
-      &--out { color: var(--text-primary); }
-    }
-  }
-
   @media (max-width: 880px) {
     &__cols { grid-template-columns: 1fr; }
   }

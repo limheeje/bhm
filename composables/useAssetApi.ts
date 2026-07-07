@@ -26,6 +26,7 @@ export const useAssetApi = () => {
   }
   async function getTransactions<T>(params: GetTransactions): Promise<T | null> {
     try {
+      //await new Promise((resolve) => setTimeout(resolve, 1000))
       return await useClientFetch.get<T>(BASE_ASSET_TRANSACTIONS, params)
     } catch (err) {
       console.log(err)

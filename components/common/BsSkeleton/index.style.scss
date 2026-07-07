@@ -1,0 +1,30 @@
+/* BsSkeleton — loading placeholder block */
+.bs-skeleton {
+  display: inline-block;
+  position: relative;
+  background: var(--surface-sunken);
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent, oklch(1 0 0 / 0.4), transparent);
+    animation: bs-skeleton-shimmer 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes bs-skeleton-shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bs-skeleton::after {
+    animation: none;
+  }
+}

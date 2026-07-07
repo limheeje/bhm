@@ -12,8 +12,8 @@ definePageMeta({layout: false})
 const router = useRouter()
 const api = useLoginApi
 const authStore = useAuthStore()
-const localId = ref('010-1111-32')
-const localPw = ref('1234')
+const localId = ref('010-3333-3333')
+const localPw = ref('dealer1234')
 const toast = useToast()
 
 const mark =
@@ -29,18 +29,17 @@ async function login() {
       contactNo: localId.value,
       password: localPw.value
     } as LoginRequest)
-    console.dir('res----', res)
 
+    console.log('res----', res)
     if (res.success) {
-      console.log('res----', res)
       authStore.setLogin(res.data)
       router.push('/dashboard')
     }
   } catch (err: any) {
-    console.dir('er----', err)
+    console.dir(err)
     toast.open({
       tone: (key) => key?.['DANGER'],
-      title: 'asdfasdf'
+      title: err?.data?.message
     })
   }
 }

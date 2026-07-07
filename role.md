@@ -34,3 +34,35 @@
 
 - 초보 프론트엔드 개발자(퍼블리셔 출신)이므로 설명은 항상 쉽고 "왜"가 중심
 - 전체 프로젝트 컨텍스트는 `CLAUDE.md` 참조
+
+## dealer API 연동 학습 순서 (2026-07-06 확정, 07-06 파일 경로 정정)
+
+`pages/dealer/**`는 과거 흔적(사용 안 함). 실제 작업 대상은 `pages/balance`, `pages/notices`, `pages/dashboard`, `pages/auctions`, `pages/favorites` — UI는 완성되어 있고 `app/data`의 정적 mock(`BALANCE`, `TRANSACTIONS`, `NOTICES`, `BIDS`, `CATTLE_LIST` 등)을 실제 API 호출로 교체하는 게 목표.
+
+- [x] 1. 잔고 (`pages/balance/index.vue`) — `asset/balance`, `asset/transactions` — 2026-07-06 완료 (아래 "주의사항" 참고)
+- [ ] 2. 공지사항 목록/상세 (`pages/notices/index.vue`) — `dealer/notices`, `dealer/notices/{ntceNo}` — 페이지네이션 + 경로 파라미터(path param)
+- [ ] 3. 대시보드 (`pages/dashboard/index.vue`) — `dealer/auctions/bids` 등 — 여러 API를 한 화면에 조합
+- [ ] 4. 소 목록 (`pages/auctions/index.vue`) — `auctions/listings/cattle` + `auctions/filter-options` — API 2개 조합
+- [ ] 5. 소 상세 — `auctions/listings/cattle/{receiptNo}` — path param + 상세 화면 (해당 페이지 없으면 추후 생성)
+- [ ] 6. 즐겨찾기 (`pages/favorites/index.vue`) — `favorites` GET/POST/DELETE — 조회+등록+삭제 한 화면에서 처리, 제일 복잡
+
+## 2026-07-06 작업 요약
+
+- 백엔드/기획/프론트 롤 분담 확정 (이 문서 최초 작성)
+- `mocks/`(MSW), `plugins/msw.client.ts` 삭제 → `server/api`로 백엔드 통일
+- `nuxt.config.ts`의 `routeRules` proxy(`/api/**` → `192.168.0.99`) 삭제 — 로컬 `server/api` 라우트를 가로막고 있던 원인이라 제거. **진짜 백엔드 연결 시 다시 검토 필요** (전체 프록시 대신 미구현 경로만 프록시하는 방식 고려)
+- `server/api/dealer/**` 8개 라우트 신규 구현 (경락내역, 필터옵션, 소목록/상세, 즐겨찾기 CRUD, 공지사항 목록/상세, 잔고, 거래내역) — `API_SPEC.md`의 `PaginationResponse` 규격에 맞춰 응답 구조 정리
+- `nuxt.config.ts`에서 `@nuxt/ui` 모듈 제거 — 커스텀 `useToast`/`useModal`이 `@nuxt/ui`의 동명 컴포저블에 자동 import가 가려지던 버그 해결
+- `useToast`를 `useModal`과 동일한 컨트롤러 패턴(`toast.open()`, `toast.dismiss()`)으로 리팩터링
+- `useClientFetch.ts`의 치명적 버그 수정 — 성공 시 `await _$fetch()` 결과를 버리고 `return new Promise(() => {})`로 영원히 안 끝나는 Promise를 반환하던 문제 → `return (await _$fetch()) as T`로 수정
+- 거래내역 mock 데이터를 240건으로 확장 (`size:20` 기준 12페이지) — 페이지네이션 테스트용
+- `pages/balance/index.vue` 완성: 단건 응답(`asset/balance`) → 페이지네이션 목록(`asset/transactions`) → 페이지 변경 시 갱신 → 1-based/0-based 인덱스 정리까지 순서대로 진행하며 실제 버그를 하나씩 발견/수정
+
+## 주의사항 (다음 페이지 작업 시 계속 부딪힐 수 있는 것들)
+
+- **페이지네이션 인덱스**: `BsPagination`의 `modelValue`는 **1부터 시작**, `server/api`의 `page` 파라미터는 **0부터 시작**. API 호출 직전에 항상 `page: currentPage.value - 1`로 변환할 것.
+- **`useAsyncData`로 목록을 다시 불러올 때**: `watch(() => x.value, () => fetchFn())`처럼 수동으로 다시 불러오면 결과가 버려짐. `useAsyncData(key, fetcher, {watch: [의존값]})` 옵션을 써야 자동으로 `data`에 반영됨.
+- **응답 구조 한 단계 주의**: `SingleResponse<T>`는 실제 값이 `res.data`에 한 번 더 감싸져 있음 (`res.data.balance`처럼). `PaginationResponse<T>`는 `res.data`가 바로 배열.
+- **`BASE_URL` export 중복 미해결**: `useLoginApi.ts`(`/auth`)와 `useAssetApi.ts`(`/dealer`)가 둘 다 최상위 `export const BASE_URL`을 갖고 있어 Nuxt 자동 import가 충돌함(하나만 조용히 무시됨). 아직 안 고침 — 새 `use*Api.ts` composable 만들 때 `BASE_URL`을 export하지 말거나 파일별로 다른 이름 사용할 것.
+- **API 실패 처리 없음**: 지금까지 만든 페이지들은 `pending`만 보고 `error`는 안 보고 있음. 다음 페이지부터는 `useAsyncData`의 `error`도 받아서 실패 시 안내를 보여주는 습관 들이기.
+- **`@nuxt/ui`는 여전히 `node_modules`/`package-lock.json`에 남아있음**: `package.json` 의존성에서만 빠진 상태라, 언젠가 `npm install`을 다시 돌리면 사라짐. 지금 당장 문제는 없음.

@@ -1,0 +1,77 @@
+/* TransactionList — 거래 내역 목록 (BsCard 내부에 들어가는 행 리스트 + 페이지네이션) */
+.tx-list {
+  &__empty {
+    padding: 32px 4px;
+    text-align: center;
+    color: var(--text-muted);
+    font: var(--type-body-sm);
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 4px;
+    border-bottom: 1px solid var(--border-subtle);
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+
+  &__icon {
+    width: 34px;
+    height: 34px;
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+
+    &--in {
+      background: var(--success-bg);
+      color: var(--success-fg);
+    }
+    &--out {
+      background: var(--danger-bg);
+      color: var(--danger-fg);
+    }
+  }
+
+  &__body {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  &__desc {
+    font: var(--type-label);
+    color: var(--text-primary);
+  }
+
+  &__date {
+    font: var(--type-caption);
+    color: var(--text-muted);
+  }
+
+  &__amount {
+    font: var(--type-title);
+    font-variant-numeric: tabular-nums;
+    flex: none;
+
+    &--in {
+      color: var(--success-fg);
+    }
+    &--out {
+      color: var(--text-primary);
+    }
+  }
+
+  &__pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 12px;
+  }
+}

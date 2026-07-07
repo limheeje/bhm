@@ -22,7 +22,7 @@ const request = async <T>(
       }
     })
   try {
-    await _$fetch()
+    return (await _$fetch()) as T
   } catch (err) {
     const {response} = err as Record<string, any>
     console.dir(response)
@@ -41,7 +41,7 @@ const request = async <T>(
       console.log('☆☆☆☆☆☆refreshed---', refreshed)
 
       if (refreshed) {
-        await _$fetch()
+        return (await _$fetch()) as T
       }
       //리프레시토큰 실패
       authStore.setLogout()
@@ -50,7 +50,6 @@ const request = async <T>(
     }
     throw err
   }
-  return new Promise(() => {})
 }
 export const useClientFetch = {
   get: async <T>(url: string, params?: object): Promise<T> => request<T>('GET', url, params),
