@@ -1,36 +1,61 @@
 // ─── 경락 내역 (dashboard) ────────────────────────────────────────────────────
-export const MOCK_BIDS = [
-  {
-    companyNm: '한우상장업체',
-    genderCd: 'STEER',
-    partNm: '등심',
-    bidSeq: 1001,
-    receiptNo: '260601-001-001',
-    gradeCd: '1+',
-    weight: 12.5,
-    bidPrice: 85000
-  },
-  {
-    companyNm: '한우상장업체',
-    genderCd: 'COW',
-    partNm: '안심',
-    bidSeq: 1002,
-    receiptNo: '260601-001-002',
-    gradeCd: '1',
-    weight: 8.3,
-    bidPrice: 72000
-  },
-  {
-    companyNm: '대한축산업체',
-    genderCd: 'STEER',
-    partNm: '채끝',
-    bidSeq: 1003,
-    receiptNo: '260601-002-001',
-    gradeCd: '2',
-    weight: 10.1,
-    bidPrice: 60000
+const BID_COMPANIES = ['한우상장업체', '대한축산업체']
+const BID_GENDERS = ['STEER', 'COW']
+const BID_PARTS = ['등심', '안심', '채끝', '우둔', '앞다리', '사태']
+const BID_GRADES = ['1+', '1', '2', '3']
+
+function generateMockBids(count: number) {
+  const fixed = [
+    {
+      companyNm: '한우상장업체',
+      genderCd: 'STEER',
+      partNm: '등심',
+      bidSeq: 1001,
+      receiptNo: '260601-001-001',
+      gradeCd: '1+',
+      weight: 12.5,
+      bidPrice: 85000
+    },
+    {
+      companyNm: '한우상장업체',
+      genderCd: 'COW',
+      partNm: '안심',
+      bidSeq: 1002,
+      receiptNo: '260601-001-002',
+      gradeCd: '1',
+      weight: 8.3,
+      bidPrice: 72000
+    },
+    {
+      companyNm: '대한축산업체',
+      genderCd: 'STEER',
+      partNm: '채끝',
+      bidSeq: 1003,
+      receiptNo: '260601-002-001',
+      gradeCd: '2',
+      weight: 10.1,
+      bidPrice: 60000
+    }
+  ]
+
+  const generated = []
+  for (let i = 0; i < count - fixed.length; i++) {
+    const bidSeq = 1004 + i
+    const companyNm = BID_COMPANIES[i % BID_COMPANIES.length]
+    const genderCd = BID_GENDERS[i % BID_GENDERS.length]
+    const partNm = BID_PARTS[i % BID_PARTS.length]
+    const gradeCd = BID_GRADES[i % BID_GRADES.length]
+    const weight = Number((6 + ((i * 37) % 90) / 10).toFixed(1))
+    const bidPrice = 40000 + ((i * 6173) % 55000)
+    const lotNo = String(Math.floor(i / 4) + 3).padStart(3, '0')
+    const receiptNo = `260601-${lotNo}-${String((i % 4) + 1).padStart(3, '0')}`
+    generated.push({companyNm, genderCd, partNm, bidSeq, receiptNo, gradeCd, weight, bidPrice})
   }
-]
+  return [...fixed, ...generated]
+}
+
+// 대시보드 KPI/목록 테스트용 50건
+export const MOCK_BIDS = generateMockBids(50)
 
 // ─── 필터 옵션 (auctions/index) ───────────────────────────────────────────────
 export const MOCK_FILTER_OPTIONS = {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import '~/app/shared.scss'
 import './index.style.scss'
+import {useRoute} from 'vue-router'
 import {computed, ref} from 'vue'
 import {BsButton, BsCard, BsBadge, BsPagination, BsModal} from '~/components/common'
 import AppIcon from '~/app/AppIcon/index.vue'
@@ -9,6 +10,8 @@ import type {PaginationResponse, SingleResponse} from '~/types/commonResponse'
 import type {getNoticeResponse, getNoticesDetailParams, getNoticesDetailResponse} from '~/composables/useNoticeApi'
 
 const api = useNoticeApi()
+const route = useRoute()
+const query = route.query
 const toast = useToast()
 const localDetailItem = ref<getNoticesDetailResponse | null>(null)
 const pageInfo = reactive({
@@ -41,6 +44,12 @@ const sortedResNoticesData = computed(() => {
     if (a.pinYn !== b.pinYn) return a.pinYn === 'Y' ? -1 : 1
     return b.regDt.localeCompare(a.regDt)
   })
+})
+
+onMounted(() => {
+  if (query.ntceNo) {
+    open(Number(query.ntceNo))
+  }
 })
 
 async function open(no: number) {

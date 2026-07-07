@@ -79,6 +79,10 @@
   - `useAsyncData`의 `error`를 안 받아서 실패 시 크래시/무반응이던 것 → `error` 상태 추가, 실패 토스트 추가
 - `useToast`의 `ToastOptions`/`ToastController`에 JSDoc 정리 — 호출부(`toast.open(...)`)에서 툴팁이 뜨려면 **구현부가 아니라 인터페이스 선언에 JSDoc을 달아야 함**(타입 기반으로 hover 정보가 뜨기 때문)
 
+## 보류된 기능
+
+- **대시보드 "전회차 대비 +12.4%"** — 원래 정적 UI에서도 하드코딩된 가짜 숫자였음. 진짜로 구현하려면 `MOCK_BIDS`에 `auctionSeq`(회차) 개념을 새로 추가하고 회차별 그룹핑/증감률 계산이 필요함 (`API_SPEC.md` 5-2 참고). 2026-07-07 기준 보류 — 필요해지면 그때 설계.
+
 ## 정리 대상 (남은 tech debt)
 
 - **`pages/dealer/**` 폴더 삭제 권장** — 과거 흔적이라 안 쓰는데, `useNoticeApi.ts` 함수명이 바뀌면서 이 폴더 안에서 타입 에러 3개가 남. 실제 라우팅엔 영향 없지만 `npx vue-tsc` 돌릴 때마다 노이즈가 낌.

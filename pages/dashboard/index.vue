@@ -1,20 +1,42 @@
 <script setup lang="ts">
 import '../../app/shared.scss'
 import './index.style.scss'
-import {computed} from 'vue'
 import {useRouter} from 'vue-router'
 import {BsCard, BsBadge, BsButton} from '../../components/common'
-import AppIcon from '../../app/AppIcon/index.vue'
-import {BIDS, BALANCE, NOTICES, GENDER_LABEL, gradeTone, formatWon, formatNumber, formatDate} from '../../app/data'
+import {GENDER_LABEL, gradeTone, formatWon, formatNumber, formatDate} from '../../app/data'
+
+import type {PaginationResponse, SingleResponse} from '~/types/commonResponse'
+import type {getNoticeResponse} from '~/composables/useNoticeApi'
+import type {getBidsResponse, getBidsSummaryResponse} from '~/composables/useBidsApi'
+import type {BalanceResponse} from '~/types/asset/balance'
 
 const router = useRouter()
-
-const totalBids = computed(() => BIDS.length)
-const totalAmount = computed(() => BIDS.reduce((s, b) => s + b.bidPrice, 0))
-const totalWeight = computed(() => BIDS.reduce((s, b) => s + b.weight, 0))
-const avgPrice = computed(() => Math.round(totalAmount.value / Math.max(1, totalBids.value)))
-
 const bidCols = '1.3fr 0.7fr 0.8fr 1.3fr 0.7fr 0.8fr 1fr'
+
+const bidsApi = useBidsApi()
+const noticesApi = useNoticeApi()
+const balanceApi = useAssetApi()
+
+const {data} = await useAsyncData(async () => {
+  const [noticeData, balanceData, bidsData, bidsSummaryData] = await Promise.all([
+    noticesApi.getNotices<PaginationResponse<getNoticeResponse>>({
+      page: 0,
+      size: 3
+    }),
+    balanceApi.getBalance<SingleResponse<BalanceResponse>>(),
+    bidsApi.getBids<PaginationResponse<getBidsResponse>>({
+      page: 0,
+      size: 10
+    }),
+    bidsApi.getBidsSummary<SingleResponse<getBidsSummaryResponse>>()
+  ])
+  return {
+    noticeData: noticeData?.success && noticeData?.data ? noticeData?.data : null,
+    balanceData: balanceData?.success && balanceData?.data ? balanceData?.data : null,
+    bidsData: bidsData?.success && bidsData?.data ? bidsData?.data : null,
+    bidsSummaryData: bidsSummaryData?.success && bidsSummaryData?.data ? bidsSummaryData?.data : null
+  }
+})
 </script>
 
 <template>
@@ -30,25 +52,21 @@ const bidCols = '1.3fr 0.7fr 0.8fr 1.3fr 0.7fr 0.8fr 1fr'
     <div class="dash__stats">
       <BsCard padding="sm">
         <div class="kpi__label">총 낙찰 건수</div>
-        <div class="kpi__value">{{ formatNumber(totalBids) }}건</div>
+        <div class="kpi__value">{{ formatNumber(data?.bidsSummaryData?.totalCount as number) }}건</div>
         <div class="kpi__trend"><span class="kpi__sub">이번 회차</span></div>
       </BsCard>
       <BsCard padding="sm">
         <div class="kpi__label">총 낙찰 금액</div>
-        <div class="kpi__value">{{ formatWon(totalAmount) }}</div>
-        <div class="kpi__trend">
-          <span class="kpi__delta kpi__delta--up"><AppIcon name="arrowUp" :size="14" :stroke="2.2" />+12.4%</span>
-          <span class="kpi__sub">전 회차 대비</span>
-        </div>
+        <div class="kpi__value">{{ formatWon(data?.bidsSummaryData?.totalAmount as number) }}</div>
       </BsCard>
       <BsCard padding="sm">
         <div class="kpi__label">총 중량</div>
-        <div class="kpi__value">{{ totalWeight.toFixed(1) }}kg</div>
+        <div class="kpi__value">{{ data?.bidsSummaryData?.totalWeight.toFixed(1) }}kg</div>
         <div class="kpi__trend"><span class="kpi__sub">부위 합계</span></div>
       </BsCard>
       <BsCard padding="sm">
         <div class="kpi__label">평균 단가</div>
-        <div class="kpi__value">{{ formatWon(avgPrice) }}</div>
+        <div class="kpi__value">{{ formatWon(data?.bidsSummaryData?.avgPrice as number) }}</div>
         <div class="kpi__trend"><span class="kpi__sub">건당 평균</span></div>
       </BsCard>
     </div>
@@ -70,7 +88,7 @@ const bidCols = '1.3fr 0.7fr 0.8fr 1.3fr 0.7fr 0.8fr 1fr'
               <div class="dt__hcell dt__hcell--right">중량</div>
               <div class="dt__hcell dt__hcell--right">낙찰가</div>
             </div>
-            <div v-for="b in BIDS" :key="b.bidSeq" class="dt__row" :style="{gridTemplateColumns: bidCols}">
+            <div v-for="b in data?.bidsData" :key="b.bidSeq" class="dt__row" :style="{gridTemplateColumns: bidCols}">
               <div class="dt__cell">{{ b.companyNm }}</div>
               <div class="dt__cell">{{ GENDER_LABEL[b.genderCd] ?? b.genderCd }}</div>
               <div class="dt__cell dt__cell--strong">{{ b.partNm }}</div>
@@ -89,9 +107,10 @@ const bidCols = '1.3fr 0.7fr 0.8fr 1.3fr 0.7fr 0.8fr 1fr'
       <div class="dash__side">
         <BsCard padding="md">
           <div class="dash__balance-label">보유 자산</div>
-          <div class="dash__balance-value">{{ formatWon(BALANCE.balance) }}</div>
+          <div class="dash__balance-value">{{ formatWon(data?.balanceData?.balance as number) }}</div>
           <div class="dash__balance-meta">
-            딜러번호 {{ BALANCE.dealerNo }} · {{ formatDate(BALANCE.updateDt, true) }} 기준
+            딜러번호 {{ data?.balanceData?.dealerNo }} ·
+            {{ formatDate(data?.balanceData?.updateDt as string, true) }} 기준
           </div>
           <div style="display: flex; gap: 8px; margin-top: 14px">
             <BsButton size="sm" :full-width="true" @click="router.push('/balance')">자산 관리</BsButton>
@@ -102,7 +121,12 @@ const bidCols = '1.3fr 0.7fr 0.8fr 1.3fr 0.7fr 0.8fr 1fr'
           <template #actions>
             <BsButton variant="ghost" size="sm" @click="router.push('/notices')">전체 보기</BsButton>
           </template>
-          <RouterLink v-for="n in NOTICES" :key="n.ntceNo" :to="`/notices?no=${n.ntceNo}`" class="dash__notice">
+          <RouterLink
+            v-for="n in data?.noticeData"
+            :key="n.ntceNo"
+            :to="`/notices?ntceNo=${n.ntceNo}`"
+            class="dash__notice"
+          >
             <BsBadge v-if="n.pinYn === 'Y'" tone="brand" size="sm">고정</BsBadge>
             <span class="dash__notice-title">{{ n.title }}</span>
             <span class="dash__notice-date">{{ formatDate(n.regDt) }}</span>
