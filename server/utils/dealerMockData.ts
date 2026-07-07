@@ -134,57 +134,113 @@ export const MOCK_FAVORITES_PART = [
 ]
 
 // ─── 공지사항 (notice) ────────────────────────────────────────────────────────
-export const MOCK_NOTICES = [
-  {ntceNo: 1, title: '2026년 7월 경매 일정 안내', regDt: '2026-06-25T09:00:00', pinYn: 'Y'},
-  {ntceNo: 2, title: '시스템 점검 안내 (6/30)', regDt: '2026-06-20T10:00:00', pinYn: 'N'},
-  {ntceNo: 3, title: '여름철 축산물 위생 관리 공지', regDt: '2026-06-15T11:00:00', pinYn: 'N'}
+const NOTICE_TITLE_TEMPLATES = [
+  '{ym} 경매 일정 안내',
+  '시스템 점검 안내',
+  '축산물 위생 관리 공지',
+  '휴장일 안내',
+  '경매 수수료 변경 안내',
+  '중도매인 등록 서류 제출 안내',
+  '정산 지연 관련 공지',
+  '설비 점검에 따른 임시 휴장',
+  '개인정보처리방침 개정 안내',
+  '모바일 앱 업데이트 안내'
 ]
 
-export const MOCK_NOTICE_DETAILS: Record<number, object> = {
-  1: {
-    ntceNo: 1,
-    title: '2026년 7월 경매 일정 안내',
-    content:
-      '안녕하세요.\n7월 경매 일정을 안내드립니다.\n\n- 7월 1일(화) 오전 9시\n- 7월 8일(화) 오전 9시\n- 7월 15일(화) 오전 9시\n\n많은 참여 바랍니다.',
-    calendarYm: '2026-07',
-    ntceTargetType: 'ALL',
-    ntceType: 'GENERAL',
-    pinYn: 'Y',
-    publishYn: 'Y',
-    regDt: '2026-06-25T09:00:00',
-    modDt: '2026-06-25T09:00:00',
-    regId: 'admin',
-    regNm: '관리자'
-  },
-  2: {
-    ntceNo: 2,
-    title: '시스템 점검 안내 (6/30)',
-    content: '6월 30일(월) 오전 2시~4시 시스템 점검이 있을 예정입니다.\n\n해당 시간 동안 서비스 이용이 불가합니다.',
-    calendarYm: '2026-06',
-    ntceTargetType: 'ALL',
-    ntceType: 'SYSTEM',
-    pinYn: 'N',
-    publishYn: 'Y',
-    regDt: '2026-06-20T10:00:00',
-    modDt: '2026-06-20T10:00:00',
-    regId: 'admin',
-    regNm: '관리자'
-  },
-  3: {
-    ntceNo: 3,
-    title: '여름철 축산물 위생 관리 공지',
-    content: '여름철 고온다습한 환경에서 축산물 위생 관리에 각별히 유의하시기 바랍니다.',
-    calendarYm: '2026-06',
-    ntceTargetType: 'ALL',
-    ntceType: 'GENERAL',
-    pinYn: 'N',
-    publishYn: 'Y',
-    regDt: '2026-06-15T11:00:00',
-    modDt: '2026-06-15T11:00:00',
-    regId: 'admin',
-    regNm: '관리자'
+function generateMockNotices(count: number) {
+  const fixed = [
+    {ntceNo: 1, title: '2026년 7월 경매 일정 안내', regDt: '2026-06-25T09:00:00', pinYn: 'Y'},
+    {ntceNo: 2, title: '시스템 점검 안내 (6/30)', regDt: '2026-06-20T10:00:00', pinYn: 'N'},
+    {ntceNo: 3, title: '여름철 축산물 위생 관리 공지', regDt: '2026-06-15T11:00:00', pinYn: 'N'}
+  ]
+  const baseDate = new Date('2026-06-14T09:00:00')
+  const generated = []
+  for (let i = 0; i < count - fixed.length; i++) {
+    const ntceNo = fixed.length + i + 1
+    const template = NOTICE_TITLE_TEMPLATES[i % NOTICE_TITLE_TEMPLATES.length]
+    const ym = `${2026 - Math.floor(i / 12)}년 ${((11 - (i % 12)) % 12) + 1}월`
+    const title = template.replace('{ym}', ym)
+    const regDt = new Date(baseDate.getTime() - i * 26 * 60 * 60 * 1000).toISOString().slice(0, 19)
+    generated.push({ntceNo, title, regDt, pinYn: i % 15 === 0 ? 'Y' : 'N'})
   }
+  return [...fixed, ...generated]
 }
+
+// 목록 페이지네이션 테스트용 50건
+export const MOCK_NOTICES = generateMockNotices(50)
+
+function generateMockNoticeDetails(): Record<number, object> {
+  const fixed: Record<number, object> = {
+    1: {
+      ntceNo: 1,
+      title: '2026년 7월 경매 일정 안내',
+      content:
+        '안녕하세요.\n7월 경매 일정을 안내드립니다.\n\n- 7월 1일(화) 오전 9시\n- 7월 8일(화) 오전 9시\n- 7월 15일(화) 오전 9시\n\n많은 참여 바랍니다.',
+      calendarYm: '2026-07',
+      ntceTargetType: 'ALL',
+      ntceType: 'GENERAL',
+      pinYn: 'Y',
+      publishYn: 'Y',
+      regDt: '2026-06-25T09:00:00',
+      modDt: '2026-06-25T09:00:00',
+      regId: 'admin',
+      regNm: '관리자'
+    },
+    2: {
+      ntceNo: 2,
+      title: '시스템 점검 안내 (6/30)',
+      content: '6월 30일(월) 오전 2시~4시 시스템 점검이 있을 예정입니다.\n\n해당 시간 동안 서비스 이용이 불가합니다.',
+      calendarYm: '2026-06',
+      ntceTargetType: 'ALL',
+      ntceType: 'SYSTEM',
+      pinYn: 'N',
+      publishYn: 'Y',
+      regDt: '2026-06-20T10:00:00',
+      modDt: '2026-06-20T10:00:00',
+      regId: 'admin',
+      regNm: '관리자'
+    },
+    3: {
+      ntceNo: 3,
+      title: '여름철 축산물 위생 관리 공지',
+      content: '여름철 고온다습한 환경에서 축산물 위생 관리에 각별히 유의하시기 바랍니다.',
+      calendarYm: '2026-06',
+      ntceTargetType: 'ALL',
+      ntceType: 'GENERAL',
+      pinYn: 'N',
+      publishYn: 'Y',
+      regDt: '2026-06-15T11:00:00',
+      modDt: '2026-06-15T11:00:00',
+      regId: 'admin',
+      regNm: '관리자'
+    }
+  }
+
+  // 4번~50번: 목록 데이터(MOCK_NOTICES)를 기반으로 상세 본문을 자동 생성
+  const generated: Record<number, object> = {}
+  for (const n of MOCK_NOTICES) {
+    if (fixed[n.ntceNo]) continue
+    const isSystem = n.title.includes('점검') || n.title.includes('휴장')
+    generated[n.ntceNo] = {
+      ntceNo: n.ntceNo,
+      title: n.title,
+      content: `${n.title}에 대해 안내드립니다.\n\n자세한 사항은 담당 부서로 문의해 주시기 바랍니다.\n\n감사합니다.`,
+      calendarYm: n.regDt.slice(0, 7),
+      ntceTargetType: 'ALL',
+      ntceType: isSystem ? 'SYSTEM' : 'GENERAL',
+      pinYn: n.pinYn,
+      publishYn: 'Y',
+      regDt: n.regDt,
+      modDt: n.regDt,
+      regId: 'admin',
+      regNm: '관리자'
+    }
+  }
+
+  return {...fixed, ...generated}
+}
+
+export const MOCK_NOTICE_DETAILS: Record<number, object> = generateMockNoticeDetails()
 
 // ─── 소 상세 (auctions/[receiptNo]) ──────────────────────────────────────────
 export const MOCK_CATTLE_DETAILS: Record<string, object> = {

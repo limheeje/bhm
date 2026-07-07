@@ -1,35 +1,73 @@
 <script setup lang="ts">
-import '../../app/shared.scss'
+import '~/app/shared.scss'
 import './index.style.scss'
-import {computed, onMounted, ref} from 'vue'
-import {useRoute} from 'vue-router'
-import {BsCard, BsBadge, BsModal, BsButton} from '../../components/common'
-import AppIcon from '../../app/AppIcon/index.vue'
-import {NOTICES, NOTICE_DETAILS, NOTICE_TYPE_LABEL, formatDate, type NoticeDetail} from '../../app/data'
+import {computed, ref} from 'vue'
+import {BsButton, BsCard, BsBadge, BsPagination, BsModal} from '~/components/common'
+import AppIcon from '~/app/AppIcon/index.vue'
+import {formatDate, NOTICE_TYPE_LABEL} from '~/app/data'
+import type {PaginationResponse, SingleResponse} from '~/types/commonResponse'
+import type {getNoticeResponse, getNoticesDetailParams, getNoticesDetailResponse} from '~/composables/useNoticeApi'
 
-const route = useRoute()
-
-// 고정 공지 먼저
-const sorted = computed(() =>
-  [...NOTICES].sort((a, b) => {
+const api = useNoticeApi()
+const toast = useToast()
+const localDetailItem = ref<getNoticesDetailResponse | null>(null)
+const pageInfo = reactive({
+  page: 1,
+  size: 5
+})
+const {
+  data: resNotices,
+  pending: resNoticesPending,
+  error: resNoticesError
+} = await useAsyncData(
+  'pages-notices',
+  async () => {
+    const res = await api.getNotices<PaginationResponse<getNoticeResponse>>({
+      ...pageInfo,
+      page: pageInfo.page - 1
+    })
+    return {
+      data: res?.data,
+      pageParams: res?.pageInfo
+    }
+  },
+  {
+    watch: [pageInfo]
+  }
+)
+const sortedResNoticesData = computed(() => {
+  const _item = (resNotices.value?.data as getNoticeResponse[]) || []
+  return [..._item].sort((a, b) => {
     if (a.pinYn !== b.pinYn) return a.pinYn === 'Y' ? -1 : 1
     return b.regDt.localeCompare(a.regDt)
   })
-)
-
-const detail = ref<NoticeDetail | null>(null)
-function open(no: number) {
-  detail.value = NOTICE_DETAILS[no] ?? null
-}
-function close() {
-  detail.value = null
-}
-
-// 대시보드에서 ?no=1 로 진입 시 바로 상세 열기
-onMounted(() => {
-  const no = Number(route.query.no)
-  if (no) open(no)
 })
+
+async function open(no: number) {
+  const res = await getNoticesDetail({
+    ntceNo: no
+  })
+  console.log('getNoticesDetail---', res)
+
+  if (res?.success) {
+    localDetailItem.value = res.data
+  } else {
+    toast.open({
+      tone: (t) => t.DANGER,
+      title: 'Error',
+      message: '목록을 불러올수없습니다.'
+    })
+    close()
+  }
+}
+
+function close() {
+  localDetailItem.value = null
+}
+
+async function getNoticesDetail(params: getNoticesDetailParams) {
+  return await api.getNoticesDetail<SingleResponse<getNoticesDetailResponse>>(params)
+}
 </script>
 
 <template>
@@ -43,27 +81,41 @@ onMounted(() => {
 
     <BsCard padding="sm">
       <div class="notice__list">
-        <button v-for="n in sorted" :key="n.ntceNo" class="notice__row" @click="open(n.ntceNo)">
-          <BsBadge v-if="n.pinYn === 'Y'" tone="brand" size="sm">
-            <AppIcon name="pin" :size="11" :stroke="2" /> 고정
-          </BsBadge>
-          <span class="notice__title" :class="{'notice__title--pinned': n.pinYn === 'Y'}">{{ n.title }}</span>
-          <span class="notice__date">{{ formatDate(n.regDt) }}</span>
-          <span class="notice__chev"><AppIcon name="chevronRight" :size="16" /></span>
-        </button>
+        <template v-if="resNoticesPending"> 처리중. 스켈레톤 </template>
+        <template v-else-if="resNoticesError"> 목로불러오기 실패 </template>
+        <template v-else>
+          <button
+            v-for="(item, index) in sortedResNoticesData"
+            :key="index"
+            class="notice__row"
+            @click="open(item.ntceNo)"
+          >
+            <BsBadge v-if="item.pinYn === 'Y'" tone="brand" size="sm">
+              <AppIcon name="pin" :size="11" :stroke="2" /> 고정
+            </BsBadge>
+            <span class="notice__title" :class="{'notice__title--pinned': item.pinYn === 'Y'}">{{ item.title }}</span>
+            <span class="notice__date">{{ formatDate(item.regDt) }}</span>
+            <span class="notice__chev"><AppIcon name="chevronRight" :size="16" /></span>
+          </button>
+          <div style="margin-top: 15px; display: flex; justify-content: center">
+            <BsPagination v-model="pageInfo.page" :total="resNotices?.pageParams?.totalPages" />
+          </div>
+        </template>
       </div>
     </BsCard>
 
-    <BsModal :model-value="!!detail" size="lg" :title="detail?.title" @update:model-value="close">
-      <template v-if="detail">
+    <BsModal :model-value="!!localDetailItem" size="lg" :title="localDetailItem?.title" @update:model-value="close">
+      <template v-if="localDetailItem">
         <div class="notice__detail-meta">
-          <BsBadge :tone="detail.ntceType === 'SYSTEM' ? 'warning' : 'neutral'" size="sm">
-            {{ NOTICE_TYPE_LABEL[detail.ntceType] ?? detail.ntceType }}
+          <BsBadge :tone="localDetailItem.ntceType === 'SYSTEM' ? 'warning' : 'neutral'" size="sm">
+            {{ NOTICE_TYPE_LABEL[localDetailItem.ntceType] ?? localDetailItem.ntceType }}
           </BsBadge>
-          <BsBadge v-if="detail.pinYn === 'Y'" tone="brand" size="sm">고정</BsBadge>
-          <span class="notice__detail-date">{{ detail.regNm }} · {{ formatDate(detail.regDt, true) }}</span>
+          <BsBadge v-if="localDetailItem.pinYn === 'Y'" tone="brand" size="sm">고정</BsBadge>
+          <span class="notice__detail-date"
+            >{{ localDetailItem.regNm }} · {{ formatDate(localDetailItem.regDt, true) }}</span
+          >
         </div>
-        <div class="notice__detail-body">{{ detail.content }}</div>
+        <div class="notice__detail-body">{{ localDetailItem.content }}</div>
       </template>
       <template #footer>
         <BsButton variant="secondary" @click="close">닫기</BsButton>

@@ -40,7 +40,7 @@
 `pages/dealer/**`는 과거 흔적(사용 안 함). 실제 작업 대상은 `pages/balance`, `pages/notices`, `pages/dashboard`, `pages/auctions`, `pages/favorites` — UI는 완성되어 있고 `app/data`의 정적 mock(`BALANCE`, `TRANSACTIONS`, `NOTICES`, `BIDS`, `CATTLE_LIST` 등)을 실제 API 호출로 교체하는 게 목표.
 
 - [x] 1. 잔고 (`pages/balance/index.vue`) — `asset/balance`, `asset/transactions` — 2026-07-06 완료 (아래 "주의사항" 참고)
-- [ ] 2. 공지사항 목록/상세 (`pages/notices/index.vue`) — `dealer/notices`, `dealer/notices/{ntceNo}` — 페이지네이션 + 경로 파라미터(path param)
+- [x] 2. 공지사항 목록/상세 (`pages/notices/index.vue`) — `dealer/notices`, `dealer/notices/{ntceNo}` — 2026-07-07 완료
 - [ ] 3. 대시보드 (`pages/dashboard/index.vue`) — `dealer/auctions/bids` 등 — 여러 API를 한 화면에 조합
 - [ ] 4. 소 목록 (`pages/auctions/index.vue`) — `auctions/listings/cattle` + `auctions/filter-options` — API 2개 조합
 - [ ] 5. 소 상세 — `auctions/listings/cattle/{receiptNo}` — path param + 상세 화면 (해당 페이지 없으면 추후 생성)
@@ -66,3 +66,22 @@
 - **`BASE_URL` export 중복 미해결**: `useLoginApi.ts`(`/auth`)와 `useAssetApi.ts`(`/dealer`)가 둘 다 최상위 `export const BASE_URL`을 갖고 있어 Nuxt 자동 import가 충돌함(하나만 조용히 무시됨). 아직 안 고침 — 새 `use*Api.ts` composable 만들 때 `BASE_URL`을 export하지 말거나 파일별로 다른 이름 사용할 것.
 - **API 실패 처리 없음**: 지금까지 만든 페이지들은 `pending`만 보고 `error`는 안 보고 있음. 다음 페이지부터는 `useAsyncData`의 `error`도 받아서 실패 시 안내를 보여주는 습관 들이기.
 - **`@nuxt/ui`는 여전히 `node_modules`/`package-lock.json`에 남아있음**: `package.json` 의존성에서만 빠진 상태라, 언젠가 `npm install`을 다시 돌리면 사라짐. 지금 당장 문제는 없음.
+
+## 2026-07-07 작업 요약 (공지사항)
+
+- `useNoticeApi.ts` 신규 작성 (`getNotices`, `getNoticesDetail`) — try/catch 포함, JSDoc `@response` 타입도 실제 타입 기준으로 정확히 맞춤
+- `pages/notices/index.vue`: 목록 페이지네이션(50건 mock) + 상세 모달 연동 완료
+- mock 데이터 확장: 공지사항 목록 50건, 상세 데이터도 1~50번 전부 채움 (`server/utils/dealerMockData.ts`)
+- 발견/수정한 버그:
+  - `resNotices.value?.data`에서 `.value` 빠뜨림 (템플릿은 자동 언랩, `<script>`는 수동으로 `.value` 필요)
+  - 페이지 인덱스 `-1` 변환 누락 → 마지막 페이지 clamp 때문에 9번/10번 페이지가 동일하게 보이던 버그
+  - `BsModal`/`BsButton` import 누락 → 모달이 아예 안 뜨던 버그. **`components/common/*` 하위 컴포넌트는 자동 import가 안 됨 — 폴더명이 붙은 `CommonBsModal` 같은 이름으로만 자동 등록되고, plain 이름(`BsModal`)은 `~/components/common`에서 매번 명시적으로 import해야 함**
+  - `useAsyncData`의 `error`를 안 받아서 실패 시 크래시/무반응이던 것 → `error` 상태 추가, 실패 토스트 추가
+- `useToast`의 `ToastOptions`/`ToastController`에 JSDoc 정리 — 호출부(`toast.open(...)`)에서 툴팁이 뜨려면 **구현부가 아니라 인터페이스 선언에 JSDoc을 달아야 함**(타입 기반으로 hover 정보가 뜨기 때문)
+
+## 정리 대상 (남은 tech debt)
+
+- **`pages/dealer/**` 폴더 삭제 권장** — 과거 흔적이라 안 쓰는데, `useNoticeApi.ts` 함수명이 바뀌면서 이 폴더 안에서 타입 에러 3개가 남. 실제 라우팅엔 영향 없지만 `npx vue-tsc` 돌릴 때마다 노이즈가 낌.
+- `pages/notices/index.vue`의 `console.log('getNoticesDetail---', res)` 디버그 로그 정리
+- "목로불러오기 실패" 오타 → "목록 불러오기 실패"
+- 목록 0건일 때 빈 상태 메시지 없음 (지금은 mock이 항상 50건이라 안 드러남)
