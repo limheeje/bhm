@@ -1,83 +1,97 @@
-import type {SingleResponse} from '~/types/commonResponse'
-import type {UserFavoriteType} from '~/constants/userFavoriteType'
-
-const BASE_URL = `/dealer/auctions`
-const BASE_FILTEROPTIONS = `${BASE_URL}/filter-options`
-const BASE_LISTINGS_CATTLE = `${BASE_URL}/listings/cattle`
-const BASE_POST_FAVORITES = `${BASE_URL}/favorites`
-
-export interface FilterOption {
+type FilterOption = {
   label: string
   value: string
 }
-
-export interface GetFilterOptionsParams {
-  auctionDate?: string // 'YYYY-MM-DD' (기본값: 오늘)
-  round?: number // 회차 (선택)
-}
-export interface GetFilterOptionsResponse {
+export interface FilterOptionsResponse {
   grades: FilterOption[]
   companies: FilterOption[]
 }
-export interface GetListingsCattleParams {
-  auctionDate?: string // 'YYYY-MM-DD'
-  round?: number // 회차
-  gradeCd?: string // 등급 필터 (빈 문자열이면 undefined 처리됨)
-  companyNo?: string // 업체 필터 (빈 문자열이면 undefined 처리됨)
-  page?: number // 1-based (기본값: 1)
-  size?: number // 기본값: 20 (하드코딩)
+export interface CattleListParams {
+  page?: number // 0-based, 기본 0
+  size?: number // 기본 20
+  gradeCd?: string // '' | '1P'(=1+) | '1' | '2' | '3'
+  companyNo?: string // '' | '001' | '002'
+  keyword?: string // 접수번호/업체명 부분일치 검색
 }
-export interface CattleListItem {
-  receiptNo: string // 접수번호 12자리 (YYMMDD-VVV-NNN 포맷)
-  breedCd?: string // 품종 코드
-  genderCd: string // 'STEER'(거세) | 'COW'(암) | 기타
-  gradeCd: string // 등급 코드
-  marblingGrade?: string // 마블링 등급
-  monthAge?: number // 월령
-  carcassWt?: number // 도체중 (kg, toFixed(1) 표시)
-  companyNo: string // 업체 번호
-  companyNm: string // 업체명
-  partCount: number // 등록된 부위 건수
-  favorite: boolean // 찜 여부
-  interestSeq?: number // 찜 해제용 ID (미찜이면 undefined)
-}
-export interface GetListingsCattleResponse {
-  list: CattleListItem[]
-  total: number // 전체 개체 수 (hasMore 계산용)
-  page: number
-  size: number
-}
-export interface PostFavoritesParams {
+export interface CattleListResponse {
   receiptNo: string
-  listingNo?: string
-  type: UserFavoriteType
-}
-export interface PostFavoritesResponse {
-  interestSeq: number
+  breedCd: string
+  genderCd: 'STEER' | 'COW'
+  gradeCd: string
+  marblingGrade: string
+  monthAge: number
+  carcassWt: number
+  companyNo: string
+  companyNm: string
+  partCount: number
+  favorite: boolean
+  interestSeq?: number
 }
 
+export interface PartListingParams {
+  page?: number // 0-based, 기본 0
+  size?: number // 기본 20
+  gradeCd?: string // '' | '1P'(=1+) | '1' | '2' | '3'
+  companyNo?: string // '' | '001' | '002'
+  keyword?: string // 부위명/접수번호/업체명 부분일치 검색
+}
+export interface PartListingResponse {
+  listingNo: string
+  partCd: string
+  partNm: string
+  weight: number
+  minPrice: number
+  listedYn: 'Y' | 'N'
+  receiptNo: string
+  gradeCd: string
+  companyNo: string
+  companyNm: string
+  favorite: boolean
+  interestSeq?: number
+}
+
+export const BASE_URL = `/dealer/auctions`
+export const BASE_FILTER_OPTIONS_URL = `${BASE_URL}/filter-options`
+export const BASE_LIST_CATTLE_URL = `${BASE_URL}/listings/cattle`
+export const BASE_LIST_PARTS_URL = `${BASE_URL}/listings/parts`
 export const useAuctionsApi = () => {
-  async function getFilterOptions(params: GetFilterOptionsParams) {
+  /**
+   * 필터옵션
+   * @method get
+   * @path /dealer/auctions/filter-options
+   * @response SingleResponse<FilterOptionsResponse>
+   */
+  const getFilterOptions = async <T>(): Promise<T | null> => {
     try {
-      return await useClientFetch.get<SingleResponse<GetFilterOptionsResponse>>(BASE_FILTEROPTIONS, params)
+      return await useClientFetch.get<T>(BASE_FILTER_OPTIONS_URL)
     } catch (err) {
       console.log(err)
       return null
     }
   }
-
-  async function getListingsCattle(params: GetListingsCattleParams) {
+  /**
+   * 필터옵션
+   * @method get
+   * @path /dealer/auctions/listings/cattle
+   * @response PaginationResponse<CattleListResponse>
+   */
+  const getCattleList = async <T>(params?: CattleListParams): Promise<T | null> => {
     try {
-      return await useClientFetch.get<SingleResponse<GetListingsCattleResponse>>(BASE_LISTINGS_CATTLE, params)
+      return await useClientFetch.get<T>(BASE_LIST_CATTLE_URL, params)
     } catch (err) {
       console.log(err)
       return null
     }
   }
-
-  async function postFavorites(params: PostFavoritesParams) {
+  /**
+   * 부위 목록
+   * @method get
+   * @path /dealer/auctions/listings/parts
+   * @response PaginationResponse<PartListingResponse>
+   */
+  const getPartsList = async <T>(params?: PartListingParams): Promise<T | null> => {
     try {
-      return await useClientFetch.post<SingleResponse<PostFavoritesResponse>>(BASE_POST_FAVORITES, params)
+      return await useClientFetch.get<T>(BASE_LIST_PARTS_URL, params)
     } catch (err) {
       console.log(err)
       return null
@@ -86,7 +100,7 @@ export const useAuctionsApi = () => {
 
   return {
     getFilterOptions,
-    getListingsCattle,
-    postFavorites
+    getCattleList,
+    getPartsList
   }
 }

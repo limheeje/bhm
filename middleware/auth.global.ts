@@ -3,7 +3,6 @@ export default defineNuxtRouteMiddleware((to) => {
 
   const loginPages = ['/login']
   const isLoginPage = loginPages.includes(to.path)
-  console.log('to.path---', to.path)
 
   if (to.path === '/') {
     return navigateTo('/login')

@@ -5,17 +5,31 @@
 import type {BsBadgeTone} from '../components/common'
 
 /* ---------- 네비게이션 ---------- */
+export interface NavChildItem {
+  key: string
+  label: string
+  to: string
+}
 export interface NavItem {
   key: string
   label: string
   icon: string
-  to: string
+  to?: string
   badge?: string
+  children?: NavChildItem[]
 }
 
 export const NAV: NavItem[] = [
   {key: 'dashboard', label: '대시보드', icon: 'grid', to: '/dashboard'},
-  {key: 'auctions', label: '경매', icon: 'gavel', to: '/auctions'},
+  {
+    key: 'auctions',
+    label: '경매',
+    icon: 'gavel',
+    children: [
+      {key: 'auctions-cattle', label: '소', to: '/auctions'},
+      {key: 'auctions-parts', label: '부위', to: '/auctions/parts'}
+    ]
+  },
   {key: 'favorites', label: '즐겨찾기', icon: 'heart', to: '/favorites', badge: '4'},
   {key: 'notices', label: '공지사항', icon: 'megaphone', to: '/notices'},
   {key: 'balance', label: '자산', icon: 'wallet', to: '/balance'}

@@ -74,61 +74,97 @@ export const MOCK_FILTER_OPTIONS = {
 }
 
 // ─── 소 목록 (auctions/index) ─────────────────────────────────────────────────
-export const MOCK_CATTLE_LIST = [
-  {
-    receiptNo: '260601-001-001',
-    breedCd: 'HANWOO',
-    genderCd: 'STEER',
-    gradeCd: '1+',
-    marblingGrade: 'BMS9',
-    monthAge: 30,
-    carcassWt: 420.5,
-    companyNo: '001',
-    companyNm: '한우상장업체',
-    partCount: 5,
-    favorite: false
-  },
-  {
-    receiptNo: '260601-001-002',
-    breedCd: 'HANWOO',
-    genderCd: 'COW',
-    gradeCd: '1',
-    marblingGrade: 'BMS7',
-    monthAge: 28,
-    carcassWt: 380.0,
-    companyNo: '001',
-    companyNm: '한우상장업체',
-    partCount: 4,
-    favorite: true,
-    interestSeq: 10
-  },
-  {
-    receiptNo: '260601-002-001',
-    breedCd: 'HANWOO',
-    genderCd: 'STEER',
-    gradeCd: '2',
-    marblingGrade: 'BMS5',
-    monthAge: 32,
-    carcassWt: 450.0,
-    companyNo: '002',
-    companyNm: '대한축산업체',
-    partCount: 6,
-    favorite: false
-  },
-  {
-    receiptNo: '260601-002-002',
-    breedCd: 'HANWOO',
-    genderCd: 'STEER',
-    gradeCd: '1+',
-    marblingGrade: 'BMS9',
-    monthAge: 29,
-    carcassWt: 410.2,
-    companyNo: '002',
-    companyNm: '대한축산업체',
-    partCount: 3,
-    favorite: false
-  }
+const CATTLE_GRADES = ['1+', '1', '2', '3']
+const CATTLE_MARBLING: Record<string, string> = {'1+': 'BMS9', '1': 'BMS7', '2': 'BMS5', '3': 'BMS3'}
+const CATTLE_COMPANIES = [
+  {companyNo: '001', companyNm: '한우상장업체'},
+  {companyNo: '002', companyNm: '대한축산업체'}
 ]
+const CATTLE_GENDERS = ['STEER', 'COW']
+
+function generateMockCattleList(count: number) {
+  const fixed = [
+    {
+      receiptNo: '260601-001-001',
+      breedCd: 'HANWOO',
+      genderCd: 'STEER',
+      gradeCd: '1+',
+      marblingGrade: 'BMS9',
+      monthAge: 30,
+      carcassWt: 420.5,
+      companyNo: '001',
+      companyNm: '한우상장업체',
+      partCount: 5,
+      favorite: false
+    },
+    {
+      receiptNo: '260601-001-002',
+      breedCd: 'HANWOO',
+      genderCd: 'COW',
+      gradeCd: '1',
+      marblingGrade: 'BMS7',
+      monthAge: 28,
+      carcassWt: 380.0,
+      companyNo: '001',
+      companyNm: '한우상장업체',
+      partCount: 4,
+      favorite: true,
+      interestSeq: 10
+    },
+    {
+      receiptNo: '260601-002-001',
+      breedCd: 'HANWOO',
+      genderCd: 'STEER',
+      gradeCd: '2',
+      marblingGrade: 'BMS5',
+      monthAge: 32,
+      carcassWt: 450.0,
+      companyNo: '002',
+      companyNm: '대한축산업체',
+      partCount: 6,
+      favorite: false
+    },
+    {
+      receiptNo: '260601-002-002',
+      breedCd: 'HANWOO',
+      genderCd: 'STEER',
+      gradeCd: '1+',
+      marblingGrade: 'BMS9',
+      monthAge: 29,
+      carcassWt: 410.2,
+      companyNo: '002',
+      companyNm: '대한축산업체',
+      partCount: 3,
+      favorite: false
+    }
+  ]
+
+  const generated = []
+  for (let i = 0; i < count - fixed.length; i++) {
+    const gradeCd = CATTLE_GRADES[i % CATTLE_GRADES.length]
+    const gender = CATTLE_GENDERS[i % CATTLE_GENDERS.length]
+    const company = CATTLE_COMPANIES[i % CATTLE_COMPANIES.length]
+    const lotNo = String(Math.floor(i / 4) + 3).padStart(3, '0')
+    const seq = String((i % 4) + 1).padStart(3, '0')
+    generated.push({
+      receiptNo: `260601-${lotNo}-${seq}`,
+      breedCd: 'HANWOO',
+      genderCd: gender,
+      gradeCd,
+      marblingGrade: CATTLE_MARBLING[gradeCd],
+      monthAge: 24 + ((i * 3) % 24),
+      carcassWt: Number((350 + ((i * 17) % 150)).toFixed(1)),
+      companyNo: company.companyNo,
+      companyNm: company.companyNm,
+      partCount: 3 + (i % 5),
+      favorite: false
+    })
+  }
+  return [...fixed, ...generated]
+}
+
+// 필터+페이지네이션 테스트용 150건
+export const MOCK_CATTLE_LIST = generateMockCattleList(150)
 
 // ─── 즐겨찾기 목록 (favorites/index) ─────────────────────────────────────────
 export const MOCK_FAVORITES_CATTLE = [
@@ -157,6 +193,12 @@ export const MOCK_FAVORITES_PART = [
     minPrice: 70000
   }
 ]
+
+let nextFavoriteSeq = Math.max(...MOCK_FAVORITES_CATTLE.map((f) => f.interestSeq), ...MOCK_FAVORITES_PART.map((f) => f.interestSeq)) + 1
+
+export function generateFavoriteSeq() {
+  return nextFavoriteSeq++
+}
 
 // ─── 공지사항 (notice) ────────────────────────────────────────────────────────
 const NOTICE_TITLE_TEMPLATES = [
@@ -268,7 +310,55 @@ function generateMockNoticeDetails(): Record<number, object> {
 export const MOCK_NOTICE_DETAILS: Record<number, object> = generateMockNoticeDetails()
 
 // ─── 소 상세 (auctions/[receiptNo]) ──────────────────────────────────────────
-export const MOCK_CATTLE_DETAILS: Record<string, object> = {
+const CATTLE_PART_POOL = [
+  {partCd: 'TEND', partNm: '안심'},
+  {partCd: 'LOIN', partNm: '등심'},
+  {partCd: 'STRI', partNm: '채끝'},
+  {partCd: 'RNDS', partNm: '우둔'},
+  {partCd: 'BLDE', partNm: '앞다리'},
+  {partCd: 'SHRK', partNm: '사태'}
+]
+
+function generateMockCattleDetails(): Record<string, object> {
+  const fixed = buildFixedCattleDetails()
+
+  const generated: Record<string, object> = {}
+  MOCK_CATTLE_LIST.forEach((c, i) => {
+    if (fixed[c.receiptNo]) return
+    const gradeBase = {'1+': 90000, '1': 78000, '2': 62000, '3': 48000}[c.gradeCd] ?? 60000
+    const parts = Array.from({length: c.partCount}, (_, p) => {
+      const part = CATTLE_PART_POOL[(i + p) % CATTLE_PART_POOL.length]
+      const lotNo = c.receiptNo.split('-')[1]
+      return {
+        listingNo: `L-${lotNo}-${String(p + 1).padStart(3, '0')}`,
+        partCd: part.partCd,
+        partNm: part.partNm,
+        weight: Number((c.carcassWt / c.partCount / 10).toFixed(1)),
+        minPrice: gradeBase - p * 4000,
+        listedYn: 'Y'
+      }
+    })
+    generated[c.receiptNo] = {
+      receiptNo: c.receiptNo,
+      breedCd: c.breedCd,
+      genderCd: c.genderCd,
+      gradeCd: c.gradeCd,
+      marblingGrade: c.marblingGrade,
+      monthAge: c.monthAge,
+      carcassWt: c.carcassWt,
+      companyNo: c.companyNo,
+      companyNm: c.companyNm,
+      favorite: c.favorite,
+      interestSeq: c.interestSeq ?? null,
+      parts
+    }
+  })
+
+  return {...fixed, ...generated}
+}
+
+function buildFixedCattleDetails(): Record<string, object> {
+  return {
   '260601-001-001': {
     receiptNo: '260601-001-001',
     breedCd: 'HANWOO',
@@ -347,7 +437,32 @@ export const MOCK_CATTLE_DETAILS: Record<string, object> = {
       {listingNo: 'L-004-003', partCd: 'STRI', partNm: '채끝', weight: 5.5, minPrice: 77000, listedYn: 'Y'}
     ]
   }
+  }
 }
+
+// 150건 전체 상세 (처음 4건은 손으로 쓴 값 유지, 나머지는 목록 데이터 기반 자동 생성)
+export const MOCK_CATTLE_DETAILS: Record<string, object> = generateMockCattleDetails()
+
+// ─── 부위 목록 (auctions/parts) — 모든 소의 부위를 한 목록으로 펼침 ──────────────
+// 상세(MOCK_CATTLE_DETAILS[...].parts)와 같은 객체를 그대로 참조하게 해서,
+// 찜 등록/해제가 어느 화면에서 일어나든 항상 같은 상태를 보게 함.
+function generateMockPartListings() {
+  const list: Record<string, any>[] = []
+  for (const cattle of MOCK_CATTLE_LIST) {
+    const detail = MOCK_CATTLE_DETAILS[cattle.receiptNo] as { parts?: Record<string, any>[] } | undefined
+    for (const part of detail?.parts ?? []) {
+      part.receiptNo = cattle.receiptNo
+      part.gradeCd = cattle.gradeCd
+      part.companyNo = cattle.companyNo
+      part.companyNm = cattle.companyNm
+      part.favorite = part.favorite ?? false
+      list.push(part)
+    }
+  }
+  return list
+}
+
+export const MOCK_PART_LISTINGS = generateMockPartListings()
 
 // ─── 자산 (balance) ───────────────────────────────────────────────────────────
 export const MOCK_BALANCE = {

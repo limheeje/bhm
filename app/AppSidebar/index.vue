@@ -17,6 +17,12 @@ const logoMark =
     '<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none">' +
       '<rect x="2" y="2" width="28" height="28" rx="8" fill="#2563d8"/><circle cx="16" cy="16" r="8" fill="#fff"/><circle cx="16" cy="16" r="3.5" fill="#2563d8"/></svg>'
   )
+
+const authStore = useAuthStore()
+const favoriteStore = useFavoritesStore()
+onMounted(async () => {
+  await favoriteStore.fetchCount()
+})
 </script>
 
 <template>
@@ -28,19 +34,36 @@ const logoMark =
 
     <nav class="app-sidebar__nav">
       <div class="app-sidebar__section">메뉴</div>
-      <NuxtLink v-for="n in NAV" :key="n.key" :to="n.to" class="app-sidebar__link">
-        <span class="app-sidebar__link-icon"><AppIcon :name="n.icon" /></span>
-        <span class="app-sidebar__link-label">{{ n.label }}</span>
-        <BsBadge v-if="n.badge" tone="neutral">{{ n.badge }}</BsBadge>
-      </NuxtLink>
+      <template v-for="n in NAV" :key="n.key">
+        <NuxtLink v-if="n.to" :to="n.to" class="app-sidebar__link">
+          <span class="app-sidebar__link-icon"><AppIcon :name="n.icon" /></span>
+          <span class="app-sidebar__link-label">{{ n.label }}</span>
+          <BsBadge v-if="n.badge" tone="neutral">{{ favoriteStore.totalCount }}</BsBadge>
+        </NuxtLink>
+
+        <template v-else-if="n.children">
+          <NuxtLink :to="n.children[0].to" class="app-sidebar__link">
+            <span class="app-sidebar__link-icon"><AppIcon :name="n.icon" /></span>
+            <span class="app-sidebar__link-label">{{ n.label }}</span>
+          </NuxtLink>
+          <NuxtLink
+            v-for="child in n.children"
+            :key="child.key"
+            :to="child.to"
+            class="app-sidebar__link app-sidebar__link--sub"
+          >
+            <span class="app-sidebar__link-label">{{ child.label }}</span>
+          </NuxtLink>
+        </template>
+      </template>
     </nav>
 
     <div class="app-sidebar__footer">
       <div class="app-sidebar__user">
-        <BsAvatar name="정하준" :size="'sm'" status="online" />
+        <BsAvatar :name="authStore.managerName" :size="'sm'" status="online" />
         <div class="app-sidebar__user-meta">
-          <div class="app-sidebar__user-name">정하준</div>
-          <div class="app-sidebar__user-role">관리자</div>
+          <div class="app-sidebar__user-name">{{ authStore.orgNm }}</div>
+          <div class="app-sidebar__user-role">{{ authStore.managerName }}</div>
         </div>
       </div>
     </div>

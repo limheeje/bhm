@@ -51,8 +51,15 @@
     &-label { flex: 1; }
   }
 
-  /* NuxtLink active class */
-  &__link.router-link-active {
+  /* 하위 메뉴 항목 — 아이콘 없이 들여쓰기 */
+  &__link--sub {
+    height: 34px;
+    padding-left: 43px;
+    font: var(--type-body-sm);
+  }
+
+  /* NuxtLink active class — 정확히 일치하는 경로만 활성화 (/auctions가 /auctions/parts까지 활성화되는 것 방지) */
+  &__link.router-link-exact-active {
     background: var(--brand-50);
     color: var(--brand-700);
     .app-sidebar__link-icon { color: var(--brand-500); }
@@ -90,6 +97,7 @@
       &-label { display: none; }
       .bs-badge { display: none; }
     }
+    .app-sidebar__link--sub { display: none; }
     .app-sidebar__user-meta { display: none; }
     .app-sidebar__user { justify-content: center; padding: 8px 0; }
   }

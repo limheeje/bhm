@@ -41,10 +41,11 @@
 
 - [x] 1. 잔고 (`pages/balance/index.vue`) — `asset/balance`, `asset/transactions` — 2026-07-06 완료 (아래 "주의사항" 참고)
 - [x] 2. 공지사항 목록/상세 (`pages/notices/index.vue`) — `dealer/notices`, `dealer/notices/{ntceNo}` — 2026-07-07 완료
-- [ ] 3. 대시보드 (`pages/dashboard/index.vue`) — `dealer/auctions/bids` 등 — 여러 API를 한 화면에 조합
-- [ ] 4. 소 목록 (`pages/auctions/index.vue`) — `auctions/listings/cattle` + `auctions/filter-options` — API 2개 조합
-- [ ] 5. 소 상세 — `auctions/listings/cattle/{receiptNo}` — path param + 상세 화면 (해당 페이지 없으면 추후 생성)
-- [ ] 6. 즐겨찾기 (`pages/favorites/index.vue`) — `favorites` GET/POST/DELETE — 조회+등록+삭제 한 화면에서 처리, 제일 복잡
+- [x] 3. 대시보드 (`pages/dashboard/index.vue`) — `dealer/auctions/bids`, bids summary — 2026-07-07 완료
+- [x] 4~5. 소 목록/상세 (`pages/auctions/index.vue`) — `auctions/listings/cattle`(필터+검색+페이지네이션) + `filter-options` + 상세 — 2026-07-08 완료
+- [x] 6. 즐겨찾기 (`pages/favorites/index.vue`, `pages/auctions/index.vue`의 토글) — `favorites` GET/POST/DELETE — 2026-07-08 완료
+
+**→ dealer API 연동 학습 순서 1~6단계 전부 완료.**
 
 ## 2026-07-06 작업 요약
 
@@ -85,7 +86,21 @@
 
 ## 정리 대상 (남은 tech debt)
 
-- **`pages/dealer/**` 폴더 삭제 권장** — 과거 흔적이라 안 쓰는데, `useNoticeApi.ts` 함수명이 바뀌면서 이 폴더 안에서 타입 에러 3개가 남. 실제 라우팅엔 영향 없지만 `npx vue-tsc` 돌릴 때마다 노이즈가 낌.
+- **`pages/dealer/**` 폴더 삭제 권장** — 과거 흔적, 계속 미뤄지고 있음. 이제 `favorites/index.vue`, `auctions/index.vue`까지 포함 총 6개 파일에서 타입 에러 남. 실제 라우팅엔 영향 없지만 `npx vue-tsc` 돌릴 때마다 계속 노이즈가 낌 — 다음에 시간 날 때 꼭 지우기.
 - `pages/notices/index.vue`의 `console.log('getNoticesDetail---', res)` 디버그 로그 정리
 - "목로불러오기 실패" 오타 → "목록 불러오기 실패"
 - 목록 0건일 때 빈 상태 메시지 없음 (지금은 mock이 항상 50건이라 안 드러남)
+- `pages/auctions/index.vue`의 `console.log('item----', item)` 디버그 로그 정리
+- 여러 `use*Api.ts`에 있는 이중 에러처리 패턴(composable이 이미 try/catch로 null 반환하는데 페이지에서 또 try/catch) — 통일 안 하고 넘어감, 기능엔 문제없지만 코드가 장황해짐
+
+## 2026-07-08 작업 요약 (대시보드 → 소 목록/상세 → 즐겨찾기, 학습 순서 완주)
+
+- 대시보드: `Promise.all`로 API 4개 병렬 처리, `bids/summary` 전용 API 신규 추가(전체 집계는 서버가 계산)
+- 소 목록: `gradeCd`/`companyNo`/`keyword`(검색, lodash debounce 적용) 서버 필터링 추가, mock 150건으로 확장
+- 소 상세: mock 150건 전부 상세(`parts` 포함) 자동 생성
+- 즐겨찾기: `POST`/`DELETE`가 실제로 mock 데이터(`MOCK_CATTLE_LIST`, `MOCK_CATTLE_DETAILS`, `MOCK_FAVORITES_*`)를 변경하도록 구현 — 기존엔 아무것도 저장 안 하는 껍데기라 새로고침하면 초기화되던 문제 해결
+- 발견/수정한 버그: `new Promise.all(...)` 문법 오류, `useAsyncData` 같은 key 중복 사용, 탭별 count가 `computed` 아닌 고정값이라 안 갱신, 부위 탭 즐겨찾기 해제 시 로컬 상태 미반영, `type: PART` 자리에 `type: CATTLE` 복붙 실수, union 타입 문제(소/부위 데이터를 ref 하나로 처리하다 발생) — 별도 ref로 분리해서 해결
+- 개념 정리: Vue의 Proxy 기반 반응형 vs React의 불변성(immutability) 패턴 차이 — Vue는 직접 mutate해도 감지됨
+- debounce vs throttle 사용 기준 정리
+
+**결론**: dealer API 연동 학습 계획(1~6단계) 완주. 남은 건 위 tech debt 정리와, 필요 시 범위 확장(관리자 포털, PUT, 회차 개념 등).

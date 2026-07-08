@@ -8,11 +8,15 @@ export default defineEventHandler((event) => {
   const companyNo = query.companyNo ? String(query.companyNo) : ''
   const keyword = query.keyword ? String(query.keyword).trim() : ''
 
-  const filtered = MOCK_CATTLE_LIST.filter((c) => {
-    // 필터 옵션의 '1P'는 실제 데이터의 '1+' 등급을 가리킴
-    const gradeMatch = !gradeCd || (gradeCd === '1P' ? c.gradeCd === '1+' : c.gradeCd === gradeCd)
-    const companyMatch = !companyNo || c.companyNo === companyNo
-    const keywordMatch = !keyword || c.receiptNo.includes(keyword) || c.companyNm.includes(keyword)
+  const filtered = MOCK_PART_LISTINGS.filter((p) => {
+    const gradeMatch = !gradeCd || (gradeCd === '1P' ? p.gradeCd === '1+' : p.gradeCd === gradeCd)
+    const companyMatch = !companyNo || p.companyNo === companyNo
+    const keywordMatch =
+      !keyword ||
+      p.partNm.includes(keyword) ||
+      p.receiptNo.includes(keyword) ||
+      p.companyNm.includes(keyword) ||
+      p.listingNo.includes(keyword)
     return gradeMatch && companyMatch && keywordMatch
   })
 
