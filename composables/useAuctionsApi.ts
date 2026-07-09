@@ -49,6 +49,29 @@ export interface PartListingResponse {
   favorite: boolean
   interestSeq?: number
 }
+export interface CattleDetailResponse {
+  receiptNo: string // 접수번호
+  breedCd: string // 품종 코드 (예: 'HANWOO')
+  genderCd: 'STEER' | 'COW' // 성별
+  gradeCd: string // 등급 ('1+' | '1' | '2' | '3')
+  marblingGrade: string // 근내지방도 (예: 'BMS9')
+  monthAge: number // 월령
+  carcassWt: number // 도체중 (kg)
+  companyNo: string // 상장업체 번호
+  companyNm: string // 상장업체명
+  favorite: boolean // 이 소 자체의 즐겨찾기 여부
+  interestSeq: number | null // 즐겨찾기 등록 시 발급된 seq (없으면 null)
+  parts: {
+    listingNo: string // 부위 상장번호 (예: 'L-001-001')
+    partCd: string // 부위 코드 (예: 'TEND')
+    partNm: string // 부위명 (예: '안심')
+    weight: number // 부위 중량 (kg)
+    minPrice: number // 최저가
+    listedYn: 'Y' | 'N' // 상장 여부
+    favorite?: boolean // 부위별 즐겨찾기 여부
+    interestSeq?: number | null // 부위 즐겨찾기 등록 시 seq
+  }[]
+}
 
 export const BASE_URL = `/dealer/auctions`
 export const BASE_FILTER_OPTIONS_URL = `${BASE_URL}/filter-options`
@@ -98,9 +121,25 @@ export const useAuctionsApi = () => {
     }
   }
 
+  /**
+   * 소 상세페이지 조회
+   * @method get
+   * @path /dealer/auctions/listings/cattle/{receiptNo}
+   * @response SingleResponse<CattleDetailResponse>
+   */
+  const getCattleDetail = async <T>(receiptNo: string): Promise<T | null> => {
+    try {
+      return await useClientFetch.get(`${BASE_LIST_CATTLE_URL}/${receiptNo}`)
+    } catch (err) {
+      console.log(err)
+      return null
+    }
+  }
+
   return {
     getFilterOptions,
     getCattleList,
-    getPartsList
+    getPartsList,
+    getCattleDetail
   }
 }

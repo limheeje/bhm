@@ -76,7 +76,13 @@ async function onClickRemoveFavorites(interestSeq: number) {
                 class="dt__row"
                 :style="{gridTemplateColumns: cattleCols}"
               >
-                <div class="dt__cell dt__cell--mono dt__cell--strong">{{ c.receiptNo }}</div>
+                <NuxtLink
+                  :to="{
+                    path: `/auctions/${c.receiptNo}`
+                  }"
+                  class="dt__cell dt__cell--mono dt__cell--strong"
+                  >{{ c.receiptNo }}</NuxtLink
+                >
                 <div>
                   <BsBadge :tone="gradeTone(c.gradeCd)">{{ c.gradeCd }}</BsBadge>
                 </div>

@@ -34,7 +34,6 @@ export const useFavoritesStore = defineStore('favorites', {
      */
     async fetchCount() {
       const res = await api.getFavoritesCount<SingleResponse<GetFavoritesCountResponse>>()
-      console.log('res----', res)
       if (res?.success) {
         this.cattleCount = res.data.cattleCount
         this.partCount = res.data.partCount

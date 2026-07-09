@@ -1,0 +1,22 @@
+/* Cattle detail (소 상세) page-specific */
+.detail {
+  &__stack { display: flex; flex-direction: column; gap: 16px; }
+
+  &__back {
+    display: inline-block;
+    font: var(--type-body-sm);
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    text-decoration: none;
+    &:hover { color: var(--text-primary); }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 20px;
+  }
+  &__item { display: flex; flex-direction: column; gap: 6px; }
+  &__label { font: var(--type-caption); color: var(--text-muted); }
+  &__value { font: var(--type-body); color: var(--text-primary); font-weight: 600; }
+}

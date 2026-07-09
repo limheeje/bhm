@@ -153,7 +153,13 @@ async function onClickFavoritesToggle(item: CattleListResponse) {
               >
                 <AppIcon :name="c.favorite ? 'heartFilled' : 'heart'" :size="17" />
               </button>
-              <div class="dt__cell dt__cell--mono dt__cell--strong">{{ c.receiptNo }}</div>
+              <NuxtLink
+                :to="{
+                  path: `/auctions/${c.receiptNo}`
+                }"
+                class="dt__cell dt__cell--mono dt__cell--strong"
+                >{{ c.receiptNo }}</NuxtLink
+              >
               <div class="dt__cell">{{ BREED_LABEL[c.breedCd] ?? c.breedCd }}</div>
               <div class="dt__cell">{{ GENDER_LABEL[c.genderCd] ?? c.genderCd }}</div>
               <div>

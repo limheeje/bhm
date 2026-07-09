@@ -147,7 +147,11 @@ async function onClickFavoritesToggle(item: PartListingResponse) {
                 <AppIcon :name="p.favorite ? 'heartFilled' : 'heart'" :size="17" />
               </button>
               <div class="dt__cell dt__cell--mono dt__cell--strong">{{ p.listingNo }}</div>
-              <div class="dt__cell dt__cell--mono dt__cell--muted">{{ p.receiptNo }}</div>
+              <NuxtLink
+                :to="{path: `/auctions/${p.receiptNo}`}"
+                class="dt__cell dt__cell--mono dt__cell--strong"
+                >{{ p.receiptNo }}</NuxtLink
+              >
               <div class="dt__cell dt__cell--strong">{{ p.partNm }}</div>
               <div>
                 <BsBadge :tone="gradeTone(p.gradeCd)">{{ p.gradeCd }}</BsBadge>
