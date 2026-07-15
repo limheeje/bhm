@@ -1,0 +1,23 @@
+/* 실시간 경매 현황 (auctions/live) page-specific */
+.live {
+  &__bid {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  &__bid-input { width: 110px; }
+
+  &__bidder {
+    font: var(--type-caption);
+    color: var(--text-muted);
+  }
+
+  &__error {
+    margin: 0 24px 16px;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    background: var(--danger-bg);
+    color: var(--danger-fg);
+    font: var(--type-body-sm);
+  }
+}

@@ -4,6 +4,13 @@ const BID_GENDERS = ['STEER', 'COW']
 const BID_PARTS = ['등심', '안심', '채끝', '우둔', '앞다리', '사태']
 const BID_GRADES = ['1+', '1', '2', '3']
 
+// 낙찰일시 mock — 오늘 기준으로 과거로 offsetHours시간 전 'YYYY-MM-DD HH:mm' 문자열 생성
+function mockBidDt(offsetHours: number): string {
+  const d = new Date(Date.now() - offsetHours * 60 * 60 * 1000)
+  const pad = (n: number) => String(n).padStart(2, '0')
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
 function generateMockBids(count: number) {
   const fixed = [
     {
@@ -14,7 +21,9 @@ function generateMockBids(count: number) {
       receiptNo: '260601-001-001',
       gradeCd: '1+',
       weight: 12.5,
-      bidPrice: 85000
+      bidPrice: 85000,
+      bidDt: mockBidDt(3),
+      unsoldYn: 'N'
     },
     {
       companyNm: '한우상장업체',
@@ -24,7 +33,9 @@ function generateMockBids(count: number) {
       receiptNo: '260601-001-002',
       gradeCd: '1',
       weight: 8.3,
-      bidPrice: 72000
+      bidPrice: 72000,
+      bidDt: mockBidDt(5),
+      unsoldYn: 'N'
     },
     {
       companyNm: '대한축산업체',
@@ -34,7 +45,9 @@ function generateMockBids(count: number) {
       receiptNo: '260601-002-001',
       gradeCd: '2',
       weight: 10.1,
-      bidPrice: 60000
+      bidPrice: 60000,
+      bidDt: mockBidDt(8),
+      unsoldYn: 'N'
     }
   ]
 
@@ -46,16 +59,18 @@ function generateMockBids(count: number) {
     const partNm = BID_PARTS[i % BID_PARTS.length]
     const gradeCd = BID_GRADES[i % BID_GRADES.length]
     const weight = Number((6 + ((i * 37) % 90) / 10).toFixed(1))
-    const bidPrice = 40000 + ((i * 6173) % 55000)
+    const unsoldYn = i % 4 === 0 ? 'Y' : 'N'
+    const bidPrice = unsoldYn === 'Y' ? 0 : 40000 + ((i * 6173) % 55000)
     const lotNo = String(Math.floor(i / 4) + 3).padStart(3, '0')
     const receiptNo = `260601-${lotNo}-${String((i % 4) + 1).padStart(3, '0')}`
-    generated.push({companyNm, genderCd, partNm, bidSeq, receiptNo, gradeCd, weight, bidPrice})
+    const bidDt = mockBidDt(10 + i * 8)
+    generated.push({companyNm, genderCd, partNm, bidSeq, receiptNo, gradeCd, weight, bidPrice, bidDt, unsoldYn})
   }
   return [...fixed, ...generated]
 }
 
-// 대시보드 KPI/목록 테스트용 50건
-export const MOCK_BIDS = generateMockBids(50)
+// 대시보드 KPI/경락내역 페이지네이션·기간필터 테스트용 150건 (최근 약 7주에 걸쳐 분포)
+export const MOCK_BIDS = generateMockBids(150)
 
 // ─── 필터 옵션 (auctions/index) ───────────────────────────────────────────────
 export const MOCK_FILTER_OPTIONS = {
@@ -194,7 +209,8 @@ export const MOCK_FAVORITES_PART = [
   }
 ]
 
-let nextFavoriteSeq = Math.max(...MOCK_FAVORITES_CATTLE.map((f) => f.interestSeq), ...MOCK_FAVORITES_PART.map((f) => f.interestSeq)) + 1
+let nextFavoriteSeq =
+  Math.max(...MOCK_FAVORITES_CATTLE.map((f) => f.interestSeq), ...MOCK_FAVORITES_PART.map((f) => f.interestSeq)) + 1
 
 export function generateFavoriteSeq() {
   return nextFavoriteSeq++
@@ -359,84 +375,84 @@ function generateMockCattleDetails(): Record<string, object> {
 
 function buildFixedCattleDetails(): Record<string, object> {
   return {
-  '260601-001-001': {
-    receiptNo: '260601-001-001',
-    breedCd: 'HANWOO',
-    genderCd: 'STEER',
-    gradeCd: '1+',
-    marblingGrade: 'BMS9',
-    monthAge: 30,
-    carcassWt: 420.5,
-    companyNo: '001',
-    companyNm: '한우상장업체',
-    favorite: false,
-    interestSeq: null,
-    parts: [
-      {listingNo: 'L-001-001', partCd: 'TEND', partNm: '안심', weight: 4.2, minPrice: 90000, listedYn: 'Y'},
-      {listingNo: 'L-001-002', partCd: 'LOIN', partNm: '등심', weight: 12.5, minPrice: 80000, listedYn: 'Y'},
-      {listingNo: 'L-001-003', partCd: 'STRI', partNm: '채끝', weight: 5.8, minPrice: 75000, listedYn: 'Y'},
-      {listingNo: 'L-001-004', partCd: 'RNDS', partNm: '우둔', weight: 9.3, minPrice: 50000, listedYn: 'Y'},
-      {listingNo: 'L-001-005', partCd: 'BLDE', partNm: '앞다리', weight: 11.2, minPrice: 45000, listedYn: 'Y'}
-    ]
-  },
-  '260601-001-002': {
-    receiptNo: '260601-001-002',
-    breedCd: 'HANWOO',
-    genderCd: 'COW',
-    gradeCd: '1',
-    marblingGrade: 'BMS7',
-    monthAge: 28,
-    carcassWt: 380.0,
-    companyNo: '001',
-    companyNm: '한우상장업체',
-    favorite: true,
-    interestSeq: 10,
-    parts: [
-      {listingNo: 'L-002-001', partCd: 'TEND', partNm: '안심', weight: 3.8, minPrice: 85000, listedYn: 'Y'},
-      {listingNo: 'L-002-002', partCd: 'LOIN', partNm: '등심', weight: 11.0, minPrice: 72000, listedYn: 'Y'},
-      {listingNo: 'L-002-003', partCd: 'RNDS', partNm: '우둔', weight: 8.5, minPrice: 48000, listedYn: 'Y'},
-      {listingNo: 'L-002-004', partCd: 'BLDE', partNm: '앞다리', weight: 10.0, minPrice: 42000, listedYn: 'Y'}
-    ]
-  },
-  '260601-002-001': {
-    receiptNo: '260601-002-001',
-    breedCd: 'HANWOO',
-    genderCd: 'STEER',
-    gradeCd: '2',
-    marblingGrade: 'BMS5',
-    monthAge: 32,
-    carcassWt: 450.0,
-    companyNo: '002',
-    companyNm: '대한축산업체',
-    favorite: false,
-    interestSeq: null,
-    parts: [
-      {listingNo: 'L-003-001', partCd: 'TEND', partNm: '안심', weight: 4.5, minPrice: 70000, listedYn: 'Y'},
-      {listingNo: 'L-003-002', partCd: 'LOIN', partNm: '등심', weight: 13.0, minPrice: 60000, listedYn: 'Y'},
-      {listingNo: 'L-003-003', partCd: 'STRI', partNm: '채끝', weight: 6.0, minPrice: 58000, listedYn: 'Y'},
-      {listingNo: 'L-003-004', partCd: 'RNDS', partNm: '우둔', weight: 10.0, minPrice: 40000, listedYn: 'Y'},
-      {listingNo: 'L-003-005', partCd: 'BLDE', partNm: '앞다리', weight: 12.0, minPrice: 38000, listedYn: 'Y'},
-      {listingNo: 'L-003-006', partCd: 'SHRK', partNm: '사태', weight: 7.5, minPrice: 35000, listedYn: 'Y'}
-    ]
-  },
-  '260601-002-002': {
-    receiptNo: '260601-002-002',
-    breedCd: 'HANWOO',
-    genderCd: 'STEER',
-    gradeCd: '1+',
-    marblingGrade: 'BMS9',
-    monthAge: 29,
-    carcassWt: 410.2,
-    companyNo: '002',
-    companyNm: '대한축산업체',
-    favorite: false,
-    interestSeq: null,
-    parts: [
-      {listingNo: 'L-004-001', partCd: 'TEND', partNm: '안심', weight: 4.0, minPrice: 92000, listedYn: 'Y'},
-      {listingNo: 'L-004-002', partCd: 'LOIN', partNm: '등심', weight: 12.0, minPrice: 82000, listedYn: 'Y'},
-      {listingNo: 'L-004-003', partCd: 'STRI', partNm: '채끝', weight: 5.5, minPrice: 77000, listedYn: 'Y'}
-    ]
-  }
+    '260601-001-001': {
+      receiptNo: '260601-001-001',
+      breedCd: 'HANWOO',
+      genderCd: 'STEER',
+      gradeCd: '1+',
+      marblingGrade: 'BMS9',
+      monthAge: 30,
+      carcassWt: 420.5,
+      companyNo: '001',
+      companyNm: '한우상장업체',
+      favorite: false,
+      interestSeq: null,
+      parts: [
+        {listingNo: 'L-001-001', partCd: 'TEND', partNm: '안심', weight: 4.2, minPrice: 90000, listedYn: 'Y'},
+        {listingNo: 'L-001-002', partCd: 'LOIN', partNm: '등심', weight: 12.5, minPrice: 80000, listedYn: 'Y'},
+        {listingNo: 'L-001-003', partCd: 'STRI', partNm: '채끝', weight: 5.8, minPrice: 75000, listedYn: 'Y'},
+        {listingNo: 'L-001-004', partCd: 'RNDS', partNm: '우둔', weight: 9.3, minPrice: 50000, listedYn: 'Y'},
+        {listingNo: 'L-001-005', partCd: 'BLDE', partNm: '앞다리', weight: 11.2, minPrice: 45000, listedYn: 'Y'}
+      ]
+    },
+    '260601-001-002': {
+      receiptNo: '260601-001-002',
+      breedCd: 'HANWOO',
+      genderCd: 'COW',
+      gradeCd: '1',
+      marblingGrade: 'BMS7',
+      monthAge: 28,
+      carcassWt: 380.0,
+      companyNo: '001',
+      companyNm: '한우상장업체',
+      favorite: true,
+      interestSeq: 10,
+      parts: [
+        {listingNo: 'L-002-001', partCd: 'TEND', partNm: '안심', weight: 3.8, minPrice: 85000, listedYn: 'Y'},
+        {listingNo: 'L-002-002', partCd: 'LOIN', partNm: '등심', weight: 11.0, minPrice: 72000, listedYn: 'Y'},
+        {listingNo: 'L-002-003', partCd: 'RNDS', partNm: '우둔', weight: 8.5, minPrice: 48000, listedYn: 'Y'},
+        {listingNo: 'L-002-004', partCd: 'BLDE', partNm: '앞다리', weight: 10.0, minPrice: 42000, listedYn: 'Y'}
+      ]
+    },
+    '260601-002-001': {
+      receiptNo: '260601-002-001',
+      breedCd: 'HANWOO',
+      genderCd: 'STEER',
+      gradeCd: '2',
+      marblingGrade: 'BMS5',
+      monthAge: 32,
+      carcassWt: 450.0,
+      companyNo: '002',
+      companyNm: '대한축산업체',
+      favorite: false,
+      interestSeq: null,
+      parts: [
+        {listingNo: 'L-003-001', partCd: 'TEND', partNm: '안심', weight: 4.5, minPrice: 70000, listedYn: 'Y'},
+        {listingNo: 'L-003-002', partCd: 'LOIN', partNm: '등심', weight: 13.0, minPrice: 60000, listedYn: 'Y'},
+        {listingNo: 'L-003-003', partCd: 'STRI', partNm: '채끝', weight: 6.0, minPrice: 58000, listedYn: 'Y'},
+        {listingNo: 'L-003-004', partCd: 'RNDS', partNm: '우둔', weight: 10.0, minPrice: 40000, listedYn: 'Y'},
+        {listingNo: 'L-003-005', partCd: 'BLDE', partNm: '앞다리', weight: 12.0, minPrice: 38000, listedYn: 'Y'},
+        {listingNo: 'L-003-006', partCd: 'SHRK', partNm: '사태', weight: 7.5, minPrice: 35000, listedYn: 'Y'}
+      ]
+    },
+    '260601-002-002': {
+      receiptNo: '260601-002-002',
+      breedCd: 'HANWOO',
+      genderCd: 'STEER',
+      gradeCd: '1+',
+      marblingGrade: 'BMS9',
+      monthAge: 29,
+      carcassWt: 410.2,
+      companyNo: '002',
+      companyNm: '대한축산업체',
+      favorite: false,
+      interestSeq: null,
+      parts: [
+        {listingNo: 'L-004-001', partCd: 'TEND', partNm: '안심', weight: 4.0, minPrice: 92000, listedYn: 'Y'},
+        {listingNo: 'L-004-002', partCd: 'LOIN', partNm: '등심', weight: 12.0, minPrice: 82000, listedYn: 'Y'},
+        {listingNo: 'L-004-003', partCd: 'STRI', partNm: '채끝', weight: 5.5, minPrice: 77000, listedYn: 'Y'}
+      ]
+    }
   }
 }
 
@@ -449,7 +465,7 @@ export const MOCK_CATTLE_DETAILS: Record<string, object> = generateMockCattleDet
 function generateMockPartListings() {
   const list: Record<string, any>[] = []
   for (const cattle of MOCK_CATTLE_LIST) {
-    const detail = MOCK_CATTLE_DETAILS[cattle.receiptNo] as { parts?: Record<string, any>[] } | undefined
+    const detail = MOCK_CATTLE_DETAILS[cattle.receiptNo] as {parts?: Record<string, any>[]} | undefined
     for (const part of detail?.parts ?? []) {
       part.receiptNo = cattle.receiptNo
       part.gradeCd = cattle.gradeCd

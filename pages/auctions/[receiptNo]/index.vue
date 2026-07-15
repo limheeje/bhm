@@ -123,43 +123,45 @@ async function onClickPartFavoriteToggle(part: CattleDetailResponse['parts'][num
       </BsCard>
 
       <BsCard title="부위 목록" padding="none">
-        <div class="dt__scroll">
-          <div class="dt__table" style="--dt-min: 560px">
-            <div class="dt__head" :style="{gridTemplateColumns: partCols}">
-              <div class="dt__hcell">상장번호</div>
-              <div class="dt__hcell">부위</div>
-              <div class="dt__hcell dt__hcell--right">중량</div>
-              <div class="dt__hcell dt__hcell--right">최저가</div>
-              <div class="dt__hcell">상태</div>
-              <div class="dt__hcell" />
-            </div>
-            <div v-for="p in data.parts" :key="p.listingNo" class="dt__row" :style="{gridTemplateColumns: partCols}">
-              <div class="dt__cell dt__cell--mono dt__cell--muted">{{ p.listingNo }}</div>
-              <div class="dt__cell dt__cell--strong">{{ p.partNm }}</div>
-              <div class="dt__cell dt__cell--num">{{ p.weight.toFixed(1) }}kg</div>
-              <div class="dt__cell dt__cell--num dt__cell--strong">{{ formatWon(p.minPrice) }}</div>
-              <div>
-                <BsBadge :tone="p.listedYn === 'Y' ? 'success' : 'neutral'">
-                  {{ p.listedYn === 'Y' ? '상장중' : '미상장' }}
-                </BsBadge>
+        <div class="auc__table">
+          <div class="dt__scroll">
+            <div class="dt__table" style="--dt-min: 560px">
+              <div class="dt__head" :style="{gridTemplateColumns: partCols}">
+                <div class="dt__hcell">상장번호</div>
+                <div class="dt__hcell">부위</div>
+                <div class="dt__hcell dt__hcell--right">중량</div>
+                <div class="dt__hcell dt__hcell--right">최저가</div>
+                <div class="dt__hcell">상태</div>
+                <div class="dt__hcell" />
               </div>
-              <div style="display: flex; justify-content: flex-end">
-                <button
-                  class="auc__fav"
-                  :class="{'auc__fav--on': p.favorite}"
-                  :aria-label="p.favorite ? '즐겨찾기 해제' : '즐겨찾기'"
-                  @click="onClickPartFavoriteToggle(p)"
-                >
-                  <AppIcon :name="p.favorite ? 'heartFilled' : 'heart'" :size="17" />
-                </button>
+              <div v-for="p in data.parts" :key="p.listingNo" class="dt__row" :style="{gridTemplateColumns: partCols}">
+                <div class="dt__cell dt__cell--mono dt__cell--muted">{{ p.listingNo }}</div>
+                <div class="dt__cell dt__cell--strong">{{ p.partNm }}</div>
+                <div class="dt__cell dt__cell--num">{{ p.weight.toFixed(1) }}kg</div>
+                <div class="dt__cell dt__cell--num dt__cell--strong">{{ formatWon(p.minPrice) }}</div>
+                <div>
+                  <BsBadge :tone="p.listedYn === 'Y' ? 'success' : 'neutral'">
+                    {{ p.listedYn === 'Y' ? '상장중' : '미상장' }}
+                  </BsBadge>
+                </div>
+                <div style="display: flex; justify-content: flex-end">
+                  <button
+                    class="auc__fav"
+                    :class="{'auc__fav--on': p.favorite}"
+                    :aria-label="p.favorite ? '즐겨찾기 해제' : '즐겨찾기'"
+                    @click="onClickPartFavoriteToggle(p)"
+                  >
+                    <AppIcon :name="p.favorite ? 'heartFilled' : 'heart'" :size="17" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
-        <div v-if="!data.parts.length" class="empty">
-          <div class="empty__icon"><AppIcon name="search" :size="22" /></div>
-          <div class="empty__text">등록된 부위가 없습니다</div>
+          <div v-if="!data.parts.length" class="empty">
+            <div class="empty__icon"><AppIcon name="search" :size="22" /></div>
+            <div class="empty__text">등록된 부위가 없습니다</div>
+          </div>
         </div>
       </BsCard>
     </div>

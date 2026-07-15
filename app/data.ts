@@ -27,9 +27,11 @@ export const NAV: NavItem[] = [
     icon: 'gavel',
     children: [
       {key: 'auctions-cattle', label: '소', to: '/auctions'},
-      {key: 'auctions-parts', label: '부위', to: '/auctions/parts'}
+      {key: 'auctions-parts', label: '부위', to: '/auctions/parts'},
+      {key: 'auctions-live', label: '실시간현황', to: '/auctions/live'}
     ]
   },
+  {key: 'bids', label: '경락내역', icon: 'receipt', to: '/bids'},
   {key: 'favorites', label: '즐겨찾기', icon: 'heart', to: '/favorites', badge: '4'},
   {key: 'notices', label: '공지사항', icon: 'megaphone', to: '/notices'},
   {key: 'balance', label: '자산', icon: 'wallet', to: '/balance'}
