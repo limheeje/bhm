@@ -7,7 +7,6 @@ import {BsIconButton, BsButton} from '../../components/common'
 defineProps<{title: string}>()
 const emit = defineEmits<{(e: 'logout'): void}>()
 
-const q = ref('')
 const dark = ref(false)
 
 function toggleTheme() {

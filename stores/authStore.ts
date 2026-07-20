@@ -27,6 +27,7 @@ export const useAuthStore = defineStore('auth', {
         this.orgNo = data.orgNo
         this.roleCd = data.roleCd
         this.expiresIn = data.expiresIn
+        console.log('data---', data)
       }
     },
     setLogout() {

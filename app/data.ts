@@ -34,7 +34,8 @@ export const NAV: NavItem[] = [
   {key: 'bids', label: '경락내역', icon: 'receipt', to: '/bids'},
   {key: 'favorites', label: '즐겨찾기', icon: 'heart', to: '/favorites', badge: '4'},
   {key: 'notices', label: '공지사항', icon: 'megaphone', to: '/notices'},
-  {key: 'balance', label: '자산', icon: 'wallet', to: '/balance'}
+  {key: 'balance', label: '자산', icon: 'wallet', to: '/balance'},
+  {key: 'settings', label: '설정', icon: 'cog', to: '/settings'}
 ]
 
 /* ---------- 코드 라벨 매핑 ---------- */

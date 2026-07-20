@@ -1,19 +1,18 @@
-import { defineEventHandler } from 'h3'
+import {defineEventHandler, getHeader, setResponseStatus} from 'h3'
 
-export default defineEventHandler(() => {
+export default defineEventHandler((event) => {
+  const token = getHeader(event, 'authorization')?.replace(/^Bearer\s+/, '')
+  const user = findMockUserByAccessToken(token)
+
+  if (!user) {
+    setResponseStatus(event, 401)
+    return {success: false, message: '인증이 필요합니다.', httpStatus: 401}
+  }
+
   return {
     success: true,
     message: '',
     httpStatus: 200,
-    data: {
-      staffContactNo: '010-1111-1111',
-      staffNm: '관리자',
-      userType: 'ADMIN',
-      orgNm: '중앙도매시장',
-      orgNo: '001',
-      roleCd: 'MASTER_ADMIN',
-      lastLoginDt: '2026-06-29T09:00:00',
-      lastLoginIp: '127.0.0.1'
-    }
+    data: {...user.profile}
   }
 })

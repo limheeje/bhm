@@ -12,6 +12,7 @@ import {USER_FAVORITE_TYPE} from '~/constants/userFavoriteType'
 import _ from 'lodash'
 
 const cols = '40px 1fr 1.1fr 1fr 0.7fr 1.2fr 0.8fr 0.9fr'
+const toast = useToast()
 const grade = ref('')
 const company = ref('')
 const keyword = ref('')
@@ -80,6 +81,7 @@ async function onClickFavoritesToggle(item: PartListingResponse) {
       item.favorite = true
       item.interestSeq = res.data.interestSeq
       favoriteStore.setIncrementCount()
+      toast.open({title: '즐겨찾기에서 추가했어요'})
     }
   } else {
     const res = await favoritesApi.postRemoveFavorites<SingleResponse<PostRemoveFavoritesReponse>>({
@@ -88,6 +90,7 @@ async function onClickFavoritesToggle(item: PartListingResponse) {
     if (res?.success) {
       item.favorite = false
       favoriteStore.setDecrementCount()
+      toast.open({title: '즐겨찾기에서 제거했어요'})
     }
   }
 }
@@ -147,11 +150,9 @@ async function onClickFavoritesToggle(item: PartListingResponse) {
                 <AppIcon :name="p.favorite ? 'heartFilled' : 'heart'" :size="17" />
               </button>
               <div class="dt__cell dt__cell--mono dt__cell--strong">{{ p.listingNo }}</div>
-              <NuxtLink
-                :to="{path: `/auctions/${p.receiptNo}`}"
-                class="dt__cell dt__cell--mono dt__cell--strong"
-                >{{ p.receiptNo }}</NuxtLink
-              >
+              <NuxtLink :to="{path: `/auctions/${p.receiptNo}`}" class="dt__cell dt__cell--mono dt__cell--strong">{{
+                p.receiptNo
+              }}</NuxtLink>
               <div class="dt__cell dt__cell--strong">{{ p.partNm }}</div>
               <div>
                 <BsBadge :tone="gradeTone(p.gradeCd)">{{ p.gradeCd }}</BsBadge>

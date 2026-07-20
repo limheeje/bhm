@@ -12,6 +12,7 @@ import type {PostAddFavoritesReponse, PostRemoveFavoritesReponse} from '~/compos
 import {USER_FAVORITE_TYPE} from '~/constants/userFavoriteType'
 
 const route = useRoute()
+const toast = useToast()
 const receiptNo = route.params.receiptNo as string
 const api = useAuctionsApi()
 console.log('receiptNo--', typeof receiptNo)
@@ -27,6 +28,7 @@ const favoritesApi = useFavoritesApi()
 const favoriteStore = useFavoritesStore()
 
 async function onClickCattleFavoriteToggle() {
+  alert(123)
   if (!data.value) return
   if (!data.value.favorite) {
     const res = await favoritesApi.postAddFavorites<SingleResponse<PostAddFavoritesReponse>>({
@@ -37,6 +39,7 @@ async function onClickCattleFavoriteToggle() {
       data.value.favorite = true
       data.value.interestSeq = res.data.interestSeq
       favoriteStore.setIncrementCount()
+      toast.open({title: '즐겨찾기에서 추가했어요'})
     }
   } else {
     const res = await favoritesApi.postRemoveFavorites<SingleResponse<PostRemoveFavoritesReponse>>({
@@ -45,6 +48,7 @@ async function onClickCattleFavoriteToggle() {
     if (res?.success) {
       data.value.favorite = false
       favoriteStore.setDecrementCount()
+      toast.open({title: '즐겨찾기에서 제거했어요'})
     }
   }
 }
@@ -60,6 +64,7 @@ async function onClickPartFavoriteToggle(part: CattleDetailResponse['parts'][num
       part.favorite = true
       part.interestSeq = res.data.interestSeq
       favoriteStore.setIncrementCount()
+      toast.open({title: '즐겨찾기에서 추가했어요'})
     }
   } else {
     const res = await favoritesApi.postRemoveFavorites<SingleResponse<PostRemoveFavoritesReponse>>({
@@ -68,6 +73,7 @@ async function onClickPartFavoriteToggle(part: CattleDetailResponse['parts'][num
     if (res?.success) {
       part.favorite = false
       favoriteStore.setDecrementCount()
+      toast.open({title: '즐겨찾기에서 제거했어요'})
     }
   }
 }

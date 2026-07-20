@@ -33,6 +33,7 @@ async function login() {
     console.log('res----', res)
     if (res.success) {
       authStore.setLogin(res.data)
+      setCookie('accessToken', res.data.accessToken, res.data.expiresIn)
       router.push('/dashboard')
     }
   } catch (err: any) {

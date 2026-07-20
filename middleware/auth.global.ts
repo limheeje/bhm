@@ -9,7 +9,7 @@ export default defineNuxtRouteMiddleware((to) => {
   }
 
   if (isLoginPage && authStore.isLoggedIn) {
-    return navigateTo('/dealer/dashboard')
+    return navigateTo('/dashboard')
   }
 
   if (!isLoginPage && !authStore.isLoggedIn) {
