@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import dayjs from 'dayjs'
 import customParseFormat from 'dayjs/plugin/customParseFormat'
 
@@ -17,6 +18,9 @@ const StringUtil = {
       now = dayjs(d).locale('en')
     }
     return now.format(f)
+  },
+  uniqueId: (prefix?: string): string => {
+    return _.uniqueId(`UUID_${prefix ?? ''}`)
   }
 } as const
 

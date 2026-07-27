@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import './index.style.scss'
 import {reactive} from 'vue'
-import {BsCard, BsAvatar, BsInput, BsButton} from '~/components/common'
+import {BsCard, BsAvatar, BsInput, BsButton, BsInputFile} from '~/components/common'
 import StringUtil from '~/utils/StringUtil'
 
 const toast = useToast()
@@ -47,6 +47,11 @@ async function onSubmit() {
     staffNm: user.staffNm,
     email: user.email
   })
+  if (localUserProfileImgFile.value) {
+    await api.postAuthMeAvatar({
+      file: localUserProfileImgFile.value
+    })
+  }
   if (res?.success) {
     localUserName.value = res.data.staffNm
     localUserEmail.value = res.data.email
@@ -59,14 +64,11 @@ async function onChange(e: Event) {
   const input = e.target as HTMLInputElement
   if (input && input.files) {
     localUserProfileImgFile.value = input.files[0]
-    const res = await api.postAuthMeAvatar({
-      file: input.files[0]
-    })
-    if (res?.success) {
-      localUserProfileImgFileSrc.value = res.data?.profileImgUrl
-    } else {
-      toast.open({title: `실패 ${res?.message}`})
+    const reader = new FileReader()
+    reader.onload = function () {
+      localUserProfileImgFileSrc.value = reader.result
     }
+    reader.readAsDataURL(input.files[0])
   }
 }
 </script>
@@ -87,7 +89,8 @@ async function onChange(e: Event) {
             </div>
             <!-- <BsButton variant="secondary" size="sm">사진 변경</BsButton> -->
           </div>
-          <input type="file" accept="image/png,image/jpeg,image/webp" @change="onChange" />
+          <!-- <input type="file" accept="image/png,image/jpeg,image/webp" @change="onChange" /> -->
+          <BsInputFile @change="onChange" />
           <div class="settings__grid" style="margin-top: 10px">
             <BsInput v-model="user.staffNm" label="이름" />
             <BsInput v-model="user.email" label="이메일" />

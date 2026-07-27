@@ -1,0 +1,33 @@
+
+.bs-input-file{
+    display: block;
+    width: 100%;
+    position: relative;
+    .c-inp{
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        visibility: hidden;
+        opacity: 0;
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+    .c-label{
+        display: block;
+        cursor: pointer;
+        .c-ins{
+            width: 100%;
+            height: 200px;
+            background: var(--surface-sunken);
+            border: 1px dashed var(--border-default);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            svg{
+                color: var(--surface-active);
+            }
+        }
+    }
+}

@@ -29,6 +29,7 @@ export {default as BsDropdownMenu} from '~/components/common/BsDropdownMenu/inde
 export {default as BsToast} from '~/components/common/BsToast/index.vue'
 export {default as BsToastProvider} from '~/components/common/BsToastProvider/index.vue'
 export {default as BsSkeleton} from '~/components/common/BsSkeleton/index.vue'
+export {default as BsInputFile} from '~/components/common/BsInputFile/index.vue'
 
 export * from '~/components/common/BsButton/index.type'
 export * from '~/components/common/BsIconButton/index.type'
@@ -46,6 +47,7 @@ export * from '~/components/common/BsModal/index.type'
 export * from '~/components/common/BsDropdownMenu/index.type'
 export * from '~/components/common/BsToast/index.type'
 export * from '~/components/common/BsSkeleton/index.type'
+export * from '~/components/common/BsInputFile/index.type'
 
 export {useToast, provideToast, LUMO_TOAST_KEY} from '~/composables/useToast'
 export type {ToastTone, ToastOptions, ToastItem, ToastController} from '~/composables/useToast'
